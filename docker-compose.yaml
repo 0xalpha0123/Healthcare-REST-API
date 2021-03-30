@@ -2,6 +2,7 @@ version: '3.8'
 services:
   dev:
     container_name: nestjs_rest_api_dev
+    image: nestjs-api-dev:1.0.0
     build:
       context: .
       target: development
@@ -18,6 +19,7 @@ services:
 
   prod:
     container_name: nestjs_rest_api_prod
+    image: nestjs-api-prod:1.0.0
     build:
       context: .
       target: production
