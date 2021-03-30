@@ -12,6 +12,8 @@ services:
       - 3000:3000
     networks:
       - app-network
+    depends_on:
+      - postgres
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
@@ -29,9 +31,24 @@ services:
       - 3000:3000
     networks:
       - app-network
+    depends_on:
+      - postgres
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+    restart: unless-stopped
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=NestAppDatabaseUser
+      - POSTGRES_PASSWORD=NestAppDatabasePassword
+      - POSTGRES_DB=TheCrucible
+    networks:
+      - app-network
     restart: unless-stopped
 
 networks:
