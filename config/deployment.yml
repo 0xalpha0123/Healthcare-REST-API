@@ -1,0 +1,10 @@
+db:
+  type: 'postgres'
+  port: 5432
+  database: TheCrucible
+  host: 'localhost'
+  username: 'NestAppDatabaseUser'
+  password: 'NestAppDatabasePassword'
+  synchronize: true
+jwt:
+  secret: 'secret'

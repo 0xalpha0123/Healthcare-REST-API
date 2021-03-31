@@ -3,6 +3,6 @@ server:
 db:
   type: 'postgres'
   port: 5432
-  database: hiring_platform
+  database: TheCrucible
 jwt:
   expiresIn: 3600

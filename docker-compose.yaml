@@ -16,7 +16,6 @@ services:
       - postgres
     volumes:
       - .:/usr/src/app
-      - /usr/src/app/node_modules
     restart: unless-stopped
 
   prod:
