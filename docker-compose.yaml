@@ -16,6 +16,7 @@ services:
       - postgres
     volumes:
       - .:/usr/src/app
+      - /usr/src/app/node_modules
     restart: unless-stopped
 
   prod:
@@ -33,8 +34,7 @@ services:
     depends_on:
       - postgres
     volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+      - .:/usr/src/app/
     restart: unless-stopped
 
   postgres:
@@ -42,10 +42,12 @@ services:
     container_name: postgres
     ports:
       - 5432:5432
+    env_file:
+      - .env
     environment:
-      - POSTGRES_USER=NestAppDatabaseUser
-      - POSTGRES_PASSWORD=NestAppDatabasePassword
-      - POSTGRES_DB=TheCrucible
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
     networks:
       - app-network
     restart: unless-stopped

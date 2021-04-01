@@ -1,16 +1,19 @@
-FROM node:14.16.0-alpine as development
+FROM node:14.15.1-alpine as development
 WORKDIR /usr/src/app
 COPY package*.json ./
+RUN rm -rf node_modules
 RUN npm install glob rimraf
-RUN npm install --only=development
+RUN npm install
+RUN npm install --rebuild-binary
 COPY . .
 RUN npm run build
 
-FROM node:14.16.0-alpine as production
+FROM node:14.15.1-alpine as production
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 WORKDIR /usr/src/app
 COPY package*.json ./
+RUN npm cache clean --force
 RUN npm install --only=production
 COPY . .
 COPY --from=development /usr/src/app/dist ./dist

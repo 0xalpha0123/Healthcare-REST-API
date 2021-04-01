@@ -9,6 +9,9 @@ $ docker-compose up -d dev
 
 # production mode
 $ docker-compose up prod
+
+# after updating package.json
+$ docker-compose build
 ```
 
 ## Running the app
