@@ -22,10 +22,11 @@ export class User extends BaseEntity {
   salt: string;
 
   @Column()
+  verification_token: string;
+
+  @Column({default: false})
   active: boolean;
 
-  @Column()
-  registration_token: string;
 
   async validatePassword(password: string): Promise<boolean> {
     const hash = await bcrypt.hash(password, this.salt);
