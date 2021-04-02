@@ -15,7 +15,6 @@ const DbConfig: ConnectionOptions | TypeOrmModuleOptions = {
   database: process.env.DATABASE_NAME,
   autoLoadEntities: true,
   synchronize: false,
-  entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/migrations/**/*{.ts,.js}'],
   cli: { migrationsDir: 'src/migrations' },
 };
