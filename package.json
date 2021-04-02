@@ -19,9 +19,10 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "typeorm:migration:generate": "npm run typeorm -- migration:generate -n",
-    "typeorm:migration:run": "npm run typeorm -- migration:run"
+    "docker-sh": "docker exec -it nestjs_rest_api_dev",
+    "migration:create": "npm run docker-sh -- npx ts-node ./node_modules/typeorm/cli.js migration:create --config src/config/db-configuration.ts -n",
+    "migration:run": "npm run docker-sh -- npx ts-node ./node_modules/typeorm/cli.js migration:run --config src/config/db-configuration.ts",
+    "migration:revert": "npm run docker-sh -- npx ts-node ./node_modules/typeorm/cli.js migration:revert --config src/config/db-configuration.ts"
   },
   "dependencies": {
     "@nestjs/common": "^7.6.15",
@@ -35,6 +36,7 @@
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
     "config": "^3.3.6",
+    "dotenv": "^8.2.0",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "pg": "^8.5.1",

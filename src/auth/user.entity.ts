@@ -24,9 +24,8 @@ export class User extends BaseEntity {
   @Column()
   verification_token: string;
 
-  @Column({default: false})
+  @Column({ default: false })
   active: boolean;
-
 
   async validatePassword(password: string): Promise<boolean> {
     const hash = await bcrypt.hash(password, this.salt);
