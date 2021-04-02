@@ -20,28 +20,31 @@ export class AuthService {
 
   async verifyEmail(verificationToken: string): Promise<void> {
     const user = await this.userRepository.verifyEmail(verificationToken);
-    if (!user){
+    if (!user) {
       throw new UnauthorizedException('Incorrect verificationToken');
     }
   }
 
-  async changePassword(authCredentialsDto: AuthCredentialsDto, user: User): Promise<void> {
-    return this.userRepository.changePassword(authCredentialsDto,user );
+  async changePassword(
+    authCredentialsDto: AuthCredentialsDto,
+    user: User,
+  ): Promise<void> {
+    return this.userRepository.changePassword(authCredentialsDto, user);
   }
 
   async signIn(
     authCredentialsDto: AuthCredentialsDto,
   ): Promise<{ accessToken: string }> {
-    const {id, email, active} = await this.userRepository.validateUser(
+    const { id, email, active } = await this.userRepository.validateUser(
       authCredentialsDto,
     );
     if (!email) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    if (!active){
-      throw new UnauthorizedException('Inactive account')
+    if (!active) {
+      throw new UnauthorizedException('Inactive account');
     }
-    const payload: JwtPayload = { id,email };
+    const payload: JwtPayload = { id, email };
     const accessToken = await this.jwtService.sign(payload);
     return { accessToken };
   }

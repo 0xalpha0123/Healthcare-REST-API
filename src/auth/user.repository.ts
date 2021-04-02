@@ -30,30 +30,27 @@ export class UserRepository extends Repository<User> {
     }
   }
 
-  async changePassword(authCredentialsDto: AuthCredentialsDto, userData: User){
+  async changePassword(authCredentialsDto: AuthCredentialsDto, userData: User) {
     const { email, password } = authCredentialsDto;
-    const user = await this.findOne({id: userData.id, email});
-    if (!user){
-      throw new NotFoundException('User not found')
+    const user = await this.findOne({ id: userData.id, email });
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
     user.password = await this.hashPassword(password, user.salt);
     await user.save();
   }
 
-  async verifyEmail(verificationToken: string):Promise<User>{
-    const user = await this.findOne({verification_token: verificationToken});
-    if (!user){
-      return null
+  async verifyEmail(verificationToken: string): Promise<User> {
+    const user = await this.findOne({ verification_token: verificationToken });
+    if (!user) {
+      return null;
     }
     user.active = true;
     await user.save();
     return user;
   }
 
-
-  async validateUser(
-    authCredentialsDto: AuthCredentialsDto,
-  ): Promise<User> {
+  async validateUser(authCredentialsDto: AuthCredentialsDto): Promise<User> {
     const { email, password } = authCredentialsDto;
     const user = await this.findOne({ email });
     if (user && (await user.validatePassword(password))) {

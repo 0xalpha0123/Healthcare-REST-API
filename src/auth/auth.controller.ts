@@ -1,4 +1,12 @@
-import { Body, Controller, Param, Patch, Post, UseGuards, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+  ValidationPipe,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDto } from './auth-credentials.dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -7,7 +15,7 @@ import { User } from './user.entity';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) {}
 
   @Post('/sign-up')
   signUp(
@@ -27,10 +35,13 @@ export class AuthController {
   ): Promise<{ accessToken: string }> {
     return this.authService.signIn(authCredentialsDto);
   }
-  
+
   @UseGuards(AuthGuard())
   @Patch('/change-password')
-  changePassword(@Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto, @GetUser() user:User){
+  changePassword(
+    @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
+    @GetUser() user: User,
+  ) {
     return this.authService.changePassword(authCredentialsDto, user);
   }
 }
