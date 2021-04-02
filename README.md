@@ -38,6 +38,9 @@ $ npm run migration:run
 
 # revert migration
 $ npm run migration:revert
+
+# generate migrations
+$ npm run migration:generate -- <Migration_Name>
 ```
 
 ## Test
