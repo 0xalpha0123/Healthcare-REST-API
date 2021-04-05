@@ -4,7 +4,8 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards, UsePipes,
+  UseGuards,
+  UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';

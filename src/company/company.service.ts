@@ -2,7 +2,10 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Company } from './entity/company.entity';
 import { Repository } from 'typeorm';
-import { CreateCompanyDto, CreateCompanyWithUserDto } from './dto/createCompany.dto';
+import {
+  CreateCompanyDto,
+  CreateCompanyWithUserDto,
+} from './dto/createCompany.dto';
 
 @Injectable()
 export class CompanyService {

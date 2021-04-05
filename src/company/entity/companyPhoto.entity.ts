@@ -1,10 +1,12 @@
 import {
   BaseEntity,
-  Column, CreateDateColumn,
+  Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryGeneratedColumn, UpdateDateColumn,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Company } from './company.entity';
 

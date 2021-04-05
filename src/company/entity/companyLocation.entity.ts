@@ -1,9 +1,12 @@
 import {
   BaseEntity,
-  Column, CreateDateColumn,
+  Column,
+  CreateDateColumn,
   Entity,
-  JoinColumn, ManyToOne,
-  PrimaryGeneratedColumn, UpdateDateColumn,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Company } from './company.entity';
 import { IsOptional } from 'class-validator';

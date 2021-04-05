@@ -10,7 +10,7 @@ import { AuthModule } from '../auth/auth.module';
 @Module({
   imports: [
     AuthModule,
-    TypeOrmModule.forFeature([Company, CompanyPhoto, CompanyLocation])
+    TypeOrmModule.forFeature([Company, CompanyPhoto, CompanyLocation]),
   ],
   providers: [CompanyService],
   controllers: [CompanyController],

@@ -46,7 +46,10 @@ export class Company extends BaseEntity {
   })
   photos: CompanyPhoto[];
 
-  @OneToMany(() => CompanyLocation, (companyLocation) => companyLocation.company, {
+  @OneToMany(
+    () => CompanyLocation,
+    (companyLocation) => companyLocation.company,
+    {
       cascade: true,
     },
   )

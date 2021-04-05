@@ -51,10 +51,7 @@ export class CompanyController {
   @Patch()
   @HttpCode(200)
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  update(
-    @Body() data: CreateCompanyDto,
-    @GetAuthorizedUser() user: User,
-  ) {
+  update(@Body() data: CreateCompanyDto, @GetAuthorizedUser() user: User) {
     return this.companyService.updateById(user.id, data);
   }
 }
