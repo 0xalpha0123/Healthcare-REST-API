@@ -4,8 +4,8 @@ import {
   Get,
   HttpCode,
   Param,
-  Patch,
   Post,
+  Put,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -48,7 +48,7 @@ export class CompanyController {
   }
 
   @UseGuards(AuthGuard())
-  @Patch()
+  @Put()
   @HttpCode(200)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   update(@Body() data: CreateCompanyDto, @GetAuthorizedUser() user: User) {
