@@ -2,10 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Company } from './entity/company.entity';
 import { Repository } from 'typeorm';
-import {
-  CreateCompanyDto,
-  CreateCompanyWithUserDto,
-} from './dto/createCompany.dto';
+import { CreateCompanyWithUserDto } from './dto/createCompany.dto';
 
 @Injectable()
 export class CompanyService {
@@ -21,41 +18,41 @@ export class CompanyService {
   }
 
   findOne(id: number): Promise<Company> {
+    return this.companyRepository.findOne(id, {
+      relations: ['photos', 'locations'],
+    });
+  }
+
+  findByUserId(userId): Promise<Company> {
     return this.companyRepository.findOne(
-      { id },
+      {
+        user_id: userId,
+      },
       {
         relations: ['photos', 'locations'],
       },
     );
   }
 
-  findByUserId(userId): Promise<Company> {
-    return this.companyRepository.findOne({
-      user_id: userId,
-    });
-  }
-
   async create(data: CreateCompanyWithUserDto): Promise<Company> {
-    let company = await this.findByUserId(data.user_id);
+    const company = await this.findByUserId(data.user_id);
 
     if (company) {
       throw new BadRequestException('User already have company');
     }
 
-    company = Company.create(data);
-
-    return company.save();
+    return this.companyRepository.create(data).save();
   }
 
-  async updateById(userId: number, data: CreateCompanyDto) {
-    const company = await this.findByUserId(userId);
+  async update(data: CreateCompanyWithUserDto) {
+    const company = await this.findByUserId(data.user_id);
 
     if (!company) {
       throw new BadRequestException('User do not have company');
     }
 
-    const updatedCompany = Object.assign(company, data);
+    const updatedCompany = await this.companyRepository.preload(data);
 
-    await updatedCompany.save();
+    await this.companyRepository.save(updatedCompany);
   }
 }

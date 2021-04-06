@@ -34,7 +34,7 @@ export class Company extends BaseEntity {
   @Column({ nullable: true })
   website_url: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, select: false })
   user_id: number;
 
   @OneToOne(() => User)
@@ -53,6 +53,7 @@ export class Company extends BaseEntity {
       cascade: true,
     },
   )
+  @JoinColumn()
   locations: CompanyLocation[];
 
   @CreateDateColumn({ type: 'timestamp' })

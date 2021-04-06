@@ -10,6 +10,8 @@ import {
 } from 'typeorm';
 import { Company } from './company.entity';
 import { IsOptional } from 'class-validator';
+import { Coordinates } from '../../common/interfaces/coordinates.interface';
+import { PointTransformer } from '../../common/transformers/point.transformer';
 
 @Entity()
 export class CompanyLocation extends BaseEntity {
@@ -20,8 +22,11 @@ export class CompanyLocation extends BaseEntity {
   @Column({ nullable: true })
   name: string;
 
-  @Column({ type: 'point' })
-  coordinates: string;
+  @Column({
+    type: 'point',
+    transformer: new PointTransformer(),
+  })
+  coordinates: Coordinates;
 
   @Column()
   city: string;
@@ -48,4 +53,9 @@ export class CompanyLocation extends BaseEntity {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
+
+  constructor(partial: Partial<CompanyLocation>) {
+    super();
+    Object.assign(this, partial);
+  }
 }

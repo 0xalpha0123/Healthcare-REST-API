@@ -17,6 +17,7 @@ const DbConfig: ConnectionOptions | TypeOrmModuleOptions = {
   synchronize: true,
   migrations: ['dist/migrations/**/*{.ts,.js}'],
   cli: { migrationsDir: 'src/migrations' },
+  logging: true,
 };
 
 export default DbConfig;

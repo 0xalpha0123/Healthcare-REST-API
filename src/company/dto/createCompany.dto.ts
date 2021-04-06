@@ -1,5 +1,6 @@
 import {
   IsArray,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
@@ -7,14 +8,19 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { Coordinates } from '../../common/interfaces/coordinates.interface';
 
 export class LocationDto {
+  @IsNumber()
+  @IsOptional()
+  id?: number;
+
   @IsString()
   @IsOptional()
   name?: string;
 
-  @IsString()
-  coordinates: string;
+  @IsNotEmpty()
+  coordinates: Coordinates;
 
   @IsString()
   city: string;
@@ -34,6 +40,10 @@ export class LocationDto {
 }
 
 export class CreateCompanyDto {
+  @IsNumber()
+  @IsOptional()
+  id?: number;
+
   @IsString()
   name: string;
 
