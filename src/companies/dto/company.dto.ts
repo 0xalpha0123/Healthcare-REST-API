@@ -50,7 +50,7 @@ export class LocationDto {
   room_number?: number;
 }
 
-export class CreateCompanyDto {
+export class CompanyDto {
   @IsNumber()
   @IsOptional()
   id?: number;
@@ -74,7 +74,7 @@ export class CreateCompanyDto {
   locations: LocationDto[];
 }
 
-export class CreateCompanyWithUserDto extends CreateCompanyDto {
+export class CompanyWithUserDto extends CompanyDto {
   @IsNumber()
   user_id: number;
 }

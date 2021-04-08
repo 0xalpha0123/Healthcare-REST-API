@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Company } from './entity/company.entity';
+import { Company } from './entities/company.entity';
 import { Repository } from 'typeorm';
-import { CreateCompanyWithUserDto, PhotoDto } from './dto/createCompany.dto';
-import { CompanyPhoto } from './entity/companyPhoto.entity';
+import { CompanyWithUserDto, PhotoDto } from './dto/company.dto';
+import { CompanyPhoto } from './entities/companyPhoto.entity';
 
 @Injectable()
-export class CompanyService {
+export class CompaniesService {
   constructor(
     @InjectRepository(Company)
     private companyRepository: Repository<Company>,
@@ -37,7 +37,7 @@ export class CompanyService {
     );
   }
 
-  async create(data: CreateCompanyWithUserDto): Promise<Company> {
+  async create(data: CompanyWithUserDto): Promise<Company> {
     const company = await this.findByUserId(data.user_id);
 
     if (company) {
@@ -47,7 +47,7 @@ export class CompanyService {
     return this.companyRepository.create(data).save();
   }
 
-  async update(data: CreateCompanyWithUserDto) {
+  async update(data: CompanyWithUserDto) {
     const company = await this.findByUserId(data.user_id);
 
     if (!company) {

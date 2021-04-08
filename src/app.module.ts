@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import Configuration from './config/configuration';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { CompanyModule } from './company/company.module';
+import { CompaniesModule } from './companies/companies.module';
 import { AwsSdkModule } from 'nest-aws-sdk';
 import { S3 } from 'aws-sdk';
 import { S3ManagerModule } from './s3manager/s3-manager.module';
@@ -29,7 +29,7 @@ import { S3ManagerModule } from './s3manager/s3-manager.module';
         configService.get('database'),
     }),
     AuthModule,
-    CompanyModule,
+    CompaniesModule,
     S3ManagerModule,
   ],
   controllers: [],

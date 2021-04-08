@@ -14,9 +14,9 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { Company } from './entity/company.entity';
-import { CompanyService } from './company.service';
-import { CreateCompanyDto } from './dto/createCompany.dto';
+import { Company } from './entities/company.entity';
+import { CompaniesService } from './companies.service';
+import { CompanyDto } from './dto/company.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetAuthorizedUser } from '../common/decorators/getAuthorizedUser.decorator';
 import { User } from '../auth/user.entity';
@@ -24,10 +24,10 @@ import { S3ManagerService } from '../s3manager/s3-manager.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { File } from '../common/interfaces/file.interface';
 
-@Controller('company')
-export class CompanyController {
+@Controller('companies')
+export class CompaniesController {
   constructor(
-    private companyService: CompanyService,
+    private companyService: CompaniesService,
     private s3ManagerService: S3ManagerService,
   ) {}
 
@@ -48,7 +48,7 @@ export class CompanyController {
   @HttpCode(201)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   create(
-    @Body() data: CreateCompanyDto,
+    @Body() data: CompanyDto,
     @GetAuthorizedUser() user: User,
   ): Promise<Company> {
     return this.companyService.create({
@@ -61,7 +61,7 @@ export class CompanyController {
   @Put()
   @HttpCode(200)
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  update(@Body() data: CreateCompanyDto, @GetAuthorizedUser() user: User) {
+  update(@Body() data: CompanyDto, @GetAuthorizedUser() user: User) {
     return this.companyService.update({
       ...data,
       user_id: user.id,
