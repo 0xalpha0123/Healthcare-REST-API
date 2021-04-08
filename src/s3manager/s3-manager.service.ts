@@ -24,7 +24,7 @@ export class S3ManagerService {
     return path.extname(fileName);
   }
 
-  private generateFileName() {
+  private generateFileName(): string {
     return crypto.randomBytes(10).toString('hex');
   }
 
@@ -45,11 +45,11 @@ export class S3ManagerService {
       .promise();
   }
 
-  async removeFile(location) {
+  async removeFile(fileLocation: string) {
     return this.s3
       .deleteObject({
         Bucket: this.awsConfig.bucket.name,
-        Key: this.getKeyFromFilePath(location),
+        Key: this.getKeyFromFilePath(fileLocation),
       })
       .promise();
   }
