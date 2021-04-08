@@ -5,12 +5,13 @@ import {
   Patch,
   Post,
   UseGuards,
+  UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDto } from './auth-credentials.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from './get-user.decorator';
+import { GetAuthorizedUser } from '../common/decorators/getAuthorizedUser.decorator';
 import { User } from './user.entity';
 
 @Controller('auth')
@@ -38,9 +39,10 @@ export class AuthController {
 
   @UseGuards(AuthGuard())
   @Patch('/change-password')
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   changePassword(
-    @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
-    @GetUser() user: User,
+    @Body() authCredentialsDto: AuthCredentialsDto,
+    @GetAuthorizedUser() user: User,
   ) {
     return this.authService.changePassword(authCredentialsDto, user);
   }

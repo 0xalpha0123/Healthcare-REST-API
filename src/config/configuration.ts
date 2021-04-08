@@ -9,9 +9,21 @@ export interface JSONWebTokenConfig {
   };
 }
 
+export interface AWSConfig {
+  credentials: {
+    accessKeyId: string;
+    secretAccessKey: string;
+  };
+  bucket: {
+    name: string;
+  };
+  region: string;
+}
+
 export interface ConfigI {
   database: ConnectionOptions | TypeOrmModuleOptions;
   jwt: JSONWebTokenConfig;
+  aws: AWSConfig;
 }
 
 export default (): ConfigI => ({
@@ -21,5 +33,15 @@ export default (): ConfigI => ({
     signOptions: {
       expiresIn: 3600,
     },
+  },
+  aws: {
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    },
+    bucket: {
+      name: process.env.S3_BUCKET_NAME,
+    },
+    region: 'eu-west-2',
   },
 });
