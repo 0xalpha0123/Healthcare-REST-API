@@ -23,7 +23,8 @@
     "migration:create": "npm run docker-sh -- npx ts-node ./node_modules/typeorm/cli.js migration:create --config src/config/db-configuration.ts -n",
     "migration:run": "npm run docker-sh -- npx ts-node ./node_modules/typeorm/cli.js migration:run --config src/config/db-configuration.ts",
     "migration:revert": "npm run docker-sh -- npx ts-node ./node_modules/typeorm/cli.js migration:revert --config src/config/db-configuration.ts",
-    "migration:generate": "npm run docker-sh -- npx ts-node ./node_modules/typeorm/cli.js migration:generate --config src/config/db-configuration.ts -n"
+    "migration:generate": "npm run docker-sh -- npx ts-node ./node_modules/typeorm/cli.js migration:generate --config src/config/db-configuration.ts -n",
+    "docker-build": "docker-compose up --build -V -d dev"
   },
   "dependencies": {
     "@nestjs/common": "^7.6.15",

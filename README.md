@@ -11,7 +11,7 @@ $ docker-compose up -d dev
 $ docker-compose up prod
 
 # after updating package.json
-$ docker-compose build dev
+$ docker-compose up --build -V -d dev
 ```
 
 ## Running the app
