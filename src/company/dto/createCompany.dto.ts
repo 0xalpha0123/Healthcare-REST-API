@@ -10,6 +10,17 @@ import {
 import { Type } from 'class-transformer';
 import { Coordinates } from '../../common/interfaces/coordinates.interface';
 
+export class PhotoDto {
+  @IsString()
+  name: string;
+
+  @IsString()
+  file_path: string;
+
+  @IsNumber()
+  company_id: number;
+}
+
 export class LocationDto {
   @IsNumber()
   @IsOptional()

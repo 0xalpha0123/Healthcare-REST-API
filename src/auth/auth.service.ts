@@ -35,16 +35,15 @@ export class AuthService {
   async signIn(
     authCredentialsDto: AuthCredentialsDto,
   ): Promise<{ accessToken: string }> {
-    const { id, email, active } = await this.userRepository.validateUser(
-      authCredentialsDto,
-    );
-    if (!email) {
+    const user = await this.userRepository.validateUser(authCredentialsDto);
+
+    if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    if (!active) {
+    if (!user.active) {
       throw new UnauthorizedException('Inactive account');
     }
-    const payload: JwtPayload = { id, email };
+    const payload: JwtPayload = { id: user.id, email: user.email };
     const accessToken = await this.jwtService.sign(payload);
     return { accessToken };
   }

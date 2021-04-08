@@ -25,6 +25,9 @@ export class CompanyPhoto extends BaseEntity {
   @JoinColumn({ name: 'company_id' })
   company: Company;
 
+  @Column({ nullable: false })
+  company_id: number;
+
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
 
