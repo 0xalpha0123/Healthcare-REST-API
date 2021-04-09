@@ -9,7 +9,7 @@ services:
       dockerfile: ./Dockerfile
     command: npm run start:dev
     ports:
-      - 3000:3000
+      -  ${APP_PORT_LOCAL-APP_PORT}:${APP_PORT}
     networks:
       - app-network
     depends_on:
@@ -28,7 +28,7 @@ services:
       dockerfile: ./Dockerfile
     command: npm run start:prod
     ports:
-      - 3000:3000
+      -  ${APP_PORT_LOCAL-APP_PORT}:${APP_PORT}
     networks:
       - app-network
     depends_on:
