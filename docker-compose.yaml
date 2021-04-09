@@ -41,7 +41,7 @@ services:
     image: postgres
     container_name: postgres
     ports:
-      - 5432:5432
+      - ${DATABASE_PORT_LOCAL-DATABASE_PORT}:${DATABASE_PORT}
     env_file:
       - .env
     environment:
