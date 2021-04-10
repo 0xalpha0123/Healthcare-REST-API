@@ -7,6 +7,7 @@ import { CompaniesModule } from './companies/companies.module';
 import { AwsSdkModule } from 'nest-aws-sdk';
 import { S3 } from 'aws-sdk';
 import { S3ManagerModule } from './s3manager/s3-manager.module';
+import { OffersModule } from './offers/offers.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { S3ManagerModule } from './s3manager/s3-manager.module';
     }),
     AuthModule,
     CompaniesModule,
+    OffersModule,
     S3ManagerModule,
   ],
   controllers: [],
