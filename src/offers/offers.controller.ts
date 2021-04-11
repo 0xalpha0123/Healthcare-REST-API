@@ -42,7 +42,7 @@ export class OffersController {
   @UseGuards(AuthGuard())
   @Put()
   @HttpCode(201)
-  update(): string {
-    return this.offersService.update();
+  update(@Body() { id }): Promise<Offer> {
+    return this.offersService.update(id);
   }
 }

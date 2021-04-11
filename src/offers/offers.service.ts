@@ -28,7 +28,8 @@ export class OffersService {
     return this.offerRepository.create(data).save();
   }
 
-  update(): string {
-    return `update`;
+  async update(id: number): Promise<Offer> {
+    const offer = await this.findOne(id);
+    return offer;
   }
 }
