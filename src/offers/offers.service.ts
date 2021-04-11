@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { OfferDto } from './dto/offer.dto';
@@ -15,8 +15,13 @@ export class OffersService {
     return this.offerRepository.find();
   }
 
-  findOne(id: number): Promise<Offer> {
-    return this.offerRepository.findOne(id);
+  async findOne(id: number): Promise<Offer> {
+    const foundOffer = await this.offerRepository.findOne(id);
+    if (!foundOffer) {
+      throw new NotFoundException(`Offer with ID "${id}" not found`);
+    }
+
+    return foundOffer;
   }
 
   create(data: OfferDto): Promise<Offer> {

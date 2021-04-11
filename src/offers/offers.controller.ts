@@ -7,6 +7,8 @@ import {
   Post,
   Put,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { OfferDto } from './dto/offer.dto';
@@ -30,15 +32,16 @@ export class OffersController {
   }
 
   @UseGuards(AuthGuard())
-  @HttpCode(201)
   @Post()
+  @HttpCode(201)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   create(@Body() data: OfferDto): Promise<Offer> {
     return this.offersService.create(data);
   }
 
   @UseGuards(AuthGuard())
-  @HttpCode(201)
   @Put()
+  @HttpCode(201)
   update(): string {
     return this.offersService.update();
   }
