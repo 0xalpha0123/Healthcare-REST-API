@@ -1,4 +1,5 @@
 import { IsOptional } from 'class-validator';
+import { Company } from 'src/companies/entities/company.entity';
 import {
   BaseEntity,
   Column,
@@ -33,7 +34,6 @@ export class Offer extends BaseEntity {
   @Column()
   salary_to: number;
 
-  @IsOptional()
   @Column()
   paid_till: Date;
 
@@ -54,6 +54,10 @@ export class Offer extends BaseEntity {
 
   @Column()
   company_id: number;
+
+  @ManyToOne(() => Company, (company) => company.offers)
+  @JoinColumn({ name: 'company_id' })
+  company: Company[];
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;

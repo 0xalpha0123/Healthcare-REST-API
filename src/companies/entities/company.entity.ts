@@ -13,6 +13,7 @@ import { User } from '../../auth/user.entity';
 import { CompanyPhoto } from './companyPhoto.entity';
 import { CompanyLocation } from './companyLocation.entity';
 import { IsOptional } from 'class-validator';
+import { Offer } from 'src/offers/entities/offer.entity';
 
 @Entity()
 export class Company extends BaseEntity {
@@ -55,6 +56,9 @@ export class Company extends BaseEntity {
   )
   @JoinColumn()
   locations: CompanyLocation[];
+
+  @OneToMany(() => Offer, (offer) => offer.company, { cascade: true })
+  offers: Offer[];
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
