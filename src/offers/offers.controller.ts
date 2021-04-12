@@ -34,7 +34,7 @@ export class OffersController {
   @UseGuards(AuthGuard())
   @Post()
   @HttpCode(201)
-  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   create(@Body() data: OfferDto): Promise<Offer> {
     return this.offersService.create(data);
   }

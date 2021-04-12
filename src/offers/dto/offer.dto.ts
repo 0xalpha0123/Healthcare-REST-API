@@ -1,20 +1,29 @@
-import { IsDate, IsNumber, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDate, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class OfferDto {
   @IsString()
   title: string;
 
   @IsString()
-  description: string;
+  @IsOptional()
+  description?: string;
 
   @IsNumber()
-  salary_from: number;
+  @IsOptional()
+  salary_from?: number;
 
   @IsNumber()
-  salary_to: number;
+  @IsOptional()
+  salary_to?: number;
 
+  @Type(() => Date)
   @IsDate()
-  paid_till: Date;
+  @IsOptional()
+  paid_till?: Date;
+
+  @IsNumber()
+  agreement_type_id: number;
 
   @IsNumber()
   profession_id: number;
