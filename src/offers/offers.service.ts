@@ -2,13 +2,22 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { OfferDto } from './dto/offer.dto';
+import { AgreementType } from './entities/agreement_type.entity';
 import { Offer } from './entities/offer.entity';
+import { Profession } from './entities/profession.entity';
+import { Specialization } from './entities/specialization.entity';
 
 @Injectable()
 export class OffersService {
   constructor(
     @InjectRepository(Offer)
     private offerRepository: Repository<Offer>,
+    @InjectRepository(Profession)
+    private professionRepository: Repository<Profession>,
+    @InjectRepository(Specialization)
+    private specializationRepository: Repository<Specialization>,
+    @InjectRepository(AgreementType)
+    private agreementTypeRepository: Repository<AgreementType>,
   ) {}
 
   findAll(): Promise<Offer[]> {
@@ -31,5 +40,17 @@ export class OffersService {
   async update(id: number): Promise<Offer> {
     const offer = await this.findOne(id);
     return offer;
+  }
+
+  findAllProfessions(): Promise<Profession[]> {
+    return this.professionRepository.find();
+  }
+
+  findAllSpecializations(): Promise<Specialization[]> {
+    return this.specializationRepository.find();
+  }
+
+  findAllAgreementTypes(): Promise<AgreementType[]> {
+    return this.agreementTypeRepository.find();
   }
 }
