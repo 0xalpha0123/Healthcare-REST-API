@@ -37,17 +37,19 @@ export class OffersService {
     return this.offerRepository.create(data).save();
   }
 
-  async update(id: number): Promise<Offer> {
-    const offer = await this.findOne(id);
-    return offer;
+  async update(id: number, data: OfferDto): Promise<void> {
+    await this.offerRepository.update(id, data);
   }
 
   findAllProfessions(): Promise<Profession[]> {
     return this.professionRepository.find();
   }
 
-  findAllSpecializations(): Promise<Specialization[]> {
-    return this.specializationRepository.find();
+  findAllSpecializations(professionId: number): Promise<Specialization[]> {
+    return this.specializationRepository.find({
+      where: { profession_id: professionId },
+      relations: ['profession'],
+    });
   }
 
   findAllAgreementTypes(): Promise<AgreementType[]> {

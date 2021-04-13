@@ -20,7 +20,10 @@ export class Specialization extends BaseEntity {
 
   @ManyToOne(() => Profession, (profession) => profession.offers)
   @JoinColumn({ name: 'profession_id' })
-  profession: Profession[];
+  profession: Profession;
+
+  @Column()
+  profession_id: number;
 
   @OneToMany(() => Offer, (offer) => offer.specialization, { cascade: true })
   offers: Offer[];

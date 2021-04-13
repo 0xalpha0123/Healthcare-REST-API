@@ -24,5 +24,5 @@ export class Profession extends BaseEntity {
     (specialization) => specialization.profession,
     { cascade: true },
   )
-  specialization: Specialization[];
+  specializations: Specialization[];
 }
