@@ -13,8 +13,11 @@ export class Profession extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: false })
   name: string;
+
+  @Column()
+  icon_path: string;
 
   @OneToMany(() => Offer, (offer) => offer.profession, { cascade: true })
   offers: Offer[];

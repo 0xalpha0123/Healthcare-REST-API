@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { OfferDto } from './dto/offer.dto';
-import { AgreementType } from './entities/agreement_type.entity';
+import { AgreementType } from './entities/agreementType.entity';
 import { Offer } from './entities/offer.entity';
 import { Profession } from './entities/profession.entity';
 import { Specialization } from './entities/specialization.entity';
@@ -46,10 +46,7 @@ export class OffersService {
   }
 
   findAllSpecializations(professionId: number): Promise<Specialization[]> {
-    return this.specializationRepository.find({
-      where: { profession_id: professionId },
-      relations: ['profession'],
-    });
+    return this.specializationRepository.find({ profession_id: professionId });
   }
 
   findAllAgreementTypes(): Promise<AgreementType[]> {

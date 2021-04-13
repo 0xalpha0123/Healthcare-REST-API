@@ -10,7 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { AgreementType } from './agreement_type.entity';
+import { AgreementType } from './agreementType.entity';
 import { Profession } from './profession.entity';
 import { Specialization } from './specialization.entity';
 
@@ -19,7 +19,7 @@ export class Offer extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: false })
   title: string;
 
   @IsOptional()
@@ -34,34 +34,34 @@ export class Offer extends BaseEntity {
   @Column()
   salary_to: number;
 
-  @Column()
+  @Column({ nullable: false })
   paid_till: Date;
 
   @Column({ default: false })
   active: boolean;
 
-  @Column()
+  @Column({ nullable: false })
   agreement_type_id: number;
 
   @ManyToOne(() => AgreementType, (agreementType) => agreementType.offers)
   @JoinColumn({ name: 'agreement_type_id' })
   agreement_type: AgreementType;
 
-  @Column()
+  @Column({ nullable: false })
   profession_id: number;
 
   @ManyToOne(() => Profession, (profession) => profession.offers)
   @JoinColumn({ name: 'profession_id' })
   profession: Profession;
 
-  @Column()
+  @Column({ nullable: false })
   specialization_id: number;
 
   @ManyToOne(() => Specialization, (specialization) => specialization.offers)
   @JoinColumn({ name: 'specializtion_id' })
   specialization: Specialization;
 
-  @Column()
+  @Column({ nullable: false })
   company_id: number;
 
   @ManyToOne(() => Company, (company) => company.offers)

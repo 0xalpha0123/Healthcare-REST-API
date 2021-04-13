@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { OfferDto } from './dto/offer.dto';
-import { AgreementType } from './entities/agreement_type.entity';
+import { AgreementType } from './entities/agreementType.entity';
 import { Offer } from './entities/offer.entity';
 import { Profession } from './entities/profession.entity';
 import { Specialization } from './entities/specialization.entity';
