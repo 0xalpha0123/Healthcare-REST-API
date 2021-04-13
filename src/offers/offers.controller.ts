@@ -22,22 +22,21 @@ import { OffersService } from './offers.service';
 export class OffersController {
   constructor(private offersService: OffersService) {}
 
-  // @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard())
   @Get('agreement-types')
   @HttpCode(200)
   findAllAgreementTypes(): Promise<AgreementType[]> {
-    console.log('TEST');
     return this.offersService.findAllAgreementTypes();
   }
 
-  // @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard())
   @Get('professions')
   @HttpCode(200)
   findAllProfessions(): Promise<Profession[]> {
     return this.offersService.findAllProfessions();
   }
 
-  // @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard())
   @Get('specializations/:id')
   @HttpCode(200)
   findAllSpecializations(

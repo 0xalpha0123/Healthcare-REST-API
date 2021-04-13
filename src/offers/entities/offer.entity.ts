@@ -40,22 +40,21 @@ export class Offer extends BaseEntity {
   @Column({ default: false })
   active: boolean;
 
-  @Column({ nullable: true })
+  @Column()
   agreement_type_id: number;
 
   @ManyToOne(() => AgreementType, (agreementType) => agreementType.offers)
   @JoinColumn({ name: 'agreement_type_id' })
   agreement_type: AgreementType;
 
-  @Column({ nullable: true })
+  @Column()
   profession_id: number;
 
   @ManyToOne(() => Profession, (profession) => profession.offers)
   @JoinColumn({ name: 'profession_id' })
   profession: Profession;
 
-  // remove nullable
-  @Column({ nullable: true })
+  @Column()
   specialization_id: number;
 
   @ManyToOne(() => Specialization, (specialization) => specialization.offers)
