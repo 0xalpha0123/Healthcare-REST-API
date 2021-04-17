@@ -8,7 +8,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Coordinates } from '../../common/interfaces/coordinates.interface';
+import { Coordinates } from '../../../common/interfaces/coordinates.interface';
 
 export class PhotoDto {
   @IsString()

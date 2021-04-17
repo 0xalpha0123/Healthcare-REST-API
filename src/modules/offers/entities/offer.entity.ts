@@ -1,5 +1,5 @@
 import { IsOptional } from 'class-validator';
-import { Company } from 'src/companies/entities/company.entity';
+import { Company } from 'src/modules/companies/entities/company.entity';
 import {
   BaseEntity,
   Column,

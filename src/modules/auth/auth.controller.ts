@@ -11,7 +11,7 @@ import {
 import { AuthService } from './auth.service';
 import { AuthCredentialsDto } from './auth-credentials.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { GetAuthorizedUser } from '../common/decorators/getAuthorizedUser.decorator';
+import { GetAuthorizedUser } from '../../common/decorators/getAuthorizedUser.decorator';
 import { User } from './user.entity';
 
 @Controller('auth')

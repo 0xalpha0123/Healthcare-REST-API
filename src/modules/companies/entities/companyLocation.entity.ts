@@ -10,8 +10,8 @@ import {
 } from 'typeorm';
 import { Company } from './company.entity';
 import { IsOptional } from 'class-validator';
-import { Coordinates } from '../../common/interfaces/coordinates.interface';
-import { PointTransformer } from '../../common/transformers/point.transformer';
+import { Coordinates } from '../../../common/interfaces/coordinates.interface';
+import { PointTransformer } from '../../../common/transformers/point.transformer';
 
 @Entity()
 export class CompanyLocation extends BaseEntity {

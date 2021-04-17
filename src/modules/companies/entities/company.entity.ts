@@ -13,7 +13,7 @@ import { User } from '../../auth/user.entity';
 import { CompanyPhoto } from './companyPhoto.entity';
 import { CompanyLocation } from './companyLocation.entity';
 import { IsOptional } from 'class-validator';
-import { Offer } from 'src/offers/entities/offer.entity';
+import { Offer } from 'src/modules/offers/entities/offer.entity';
 
 @Entity()
 export class Company extends BaseEntity {
