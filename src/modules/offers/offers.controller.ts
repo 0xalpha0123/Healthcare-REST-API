@@ -7,11 +7,13 @@ import {
   Post,
   Put,
   UseGuards,
-  UsePipes,
   ValidationPipe,
+  Query
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { OfferFilterDto } from './dto/offer-filter.dto';
 import { OfferDto } from './dto/offer.dto';
+import { SpecializationFilterDto } from './dto/specialization-filter.dto';
 import { AgreementType } from './entities/agreementType.entity';
 import { Offer } from './entities/offer.entity';
 import { Profession } from './entities/profession.entity';
@@ -34,18 +36,18 @@ export class OffersController {
     return this.offersService.findAllProfessions();
   }
 
-  @Get('specializations/:id')
+  @Get('specializations')
   @HttpCode(200)
   findAllSpecializations(
-    @Param() professionId: number,
+    @Query(ValidationPipe) filterDto: SpecializationFilterDto,
   ): Promise<Specialization[]> {
-    return this.offersService.findAllSpecializations(professionId);
+    return this.offersService.findAllSpecializations(filterDto);
   }
 
   @Get()
   @HttpCode(200)
-  findAll(): Promise<Offer[]> {
-    return this.offersService.findAll();
+  findAll(@Query(ValidationPipe) filterDto: OfferFilterDto): Promise<Offer[]> {
+    return this.offersService.findAll(filterDto);
   }
 
   @Get(':id')
@@ -54,11 +56,10 @@ export class OffersController {
     return this.offersService.findOne(id);
   }
 
-  @UseGuards(AuthGuard())
+  // @UseGuards(AuthGuard())
   @Post()
   @HttpCode(201)
-  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
-  create(@Body() data: OfferDto): Promise<Offer> {
+  create(@Body(ValidationPipe) data: OfferDto): Promise<Offer> {
     return this.offersService.create(data);
   }
 

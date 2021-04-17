@@ -9,7 +9,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Company } from './company.entity';
-import { IsOptional } from 'class-validator';
 import { Coordinates } from '../../../common/interfaces/coordinates.interface';
 import { PointTransformer } from '../../../common/transformers/point.transformer';
 
@@ -18,7 +17,6 @@ export class CompanyLocation extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @IsOptional()
   @Column({ nullable: true })
   name: string;
 
@@ -40,7 +38,6 @@ export class CompanyLocation extends BaseEntity {
   @Column()
   building_number: number;
 
-  @IsOptional()
   @Column({ nullable: true })
   room_number: number;
 

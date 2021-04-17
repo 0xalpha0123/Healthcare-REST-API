@@ -1,7 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { OfferFilterDto } from './dto/offer-filter.dto';
 import { OfferDto } from './dto/offer.dto';
+import { SpecializationFilterDto } from './dto/specialization-filter.dto';
 import { AgreementType } from './entities/agreementType.entity';
 import { Offer } from './entities/offer.entity';
 import { Profession } from './entities/profession.entity';
@@ -20,8 +22,8 @@ export class OffersService {
     private agreementTypeRepository: Repository<AgreementType>,
   ) {}
 
-  findAll(): Promise<Offer[]> {
-    return this.offerRepository.find();
+  async findAll(filterDto: OfferFilterDto): Promise<Offer[]> {
+    return await this.offerRepository.find(filterDto);
   }
 
   async findOne(id: number): Promise<Offer> {
@@ -33,23 +35,23 @@ export class OffersService {
     return foundOffer;
   }
 
-  create(data: OfferDto): Promise<Offer> {
-    return this.offerRepository.create(data).save();
+  async create(data: OfferDto): Promise<Offer> {
+    return await this.offerRepository.create(data).save();
   }
 
   async update(id: number, data: OfferDto): Promise<void> {
     await this.offerRepository.update(id, data);
   }
 
-  findAllProfessions(): Promise<Profession[]> {
-    return this.professionRepository.find();
+  async findAllProfessions(): Promise<Profession[]> {
+    return await this.professionRepository.find();
   }
 
-  findAllSpecializations(professionId: number): Promise<Specialization[]> {
-    return this.specializationRepository.find({ profession_id: professionId });
+  async findAllSpecializations(filterDto: SpecializationFilterDto): Promise<Specialization[]> {
+    return await this.specializationRepository.find(filterDto);
   }
 
-  findAllAgreementTypes(): Promise<AgreementType[]> {
-    return this.agreementTypeRepository.find();
+  async findAllAgreementTypes(): Promise<AgreementType[]> {
+    return await this.agreementTypeRepository.find();
   }
 }

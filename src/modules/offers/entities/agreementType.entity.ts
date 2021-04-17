@@ -3,7 +3,7 @@ import {
   BaseEntity,
   Column,
   Entity,
-  OneToMany,
+  ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -15,6 +15,6 @@ export class AgreementType extends BaseEntity {
   @Column()
   name: string;
 
-  @OneToMany(() => Offer, (offer) => offer.agreement_type, { cascade: true })
+  @ManyToMany(() => Offer, (offer) => offer.agreement_types, { cascade: true })
   offers: Offer[];
 }

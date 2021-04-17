@@ -1,4 +1,3 @@
-import { IsOptional } from 'class-validator';
 import { Company } from 'src/modules/companies/entities/company.entity';
 import {
   BaseEntity,
@@ -6,6 +5,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -19,58 +19,52 @@ export class Offer extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: false })
+  @Column()
   title: string;
 
-  @IsOptional()
   @Column()
   description: string;
 
-  @IsOptional()
-  @Column()
+  @Column({nullable: true})
   salary_from: number;
 
-  @IsOptional()
-  @Column()
+  @Column({nullable: true})
   salary_to: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   paid_till: Date;
 
   @Column({ default: false })
   active: boolean;
 
-  @Column({ nullable: false })
-  agreement_type_id: number;
-
-  @ManyToOne(() => AgreementType, (agreementType) => agreementType.offers)
-  @JoinColumn({ name: 'agreement_type_id' })
-  agreement_type: AgreementType;
-
-  @Column({ nullable: false })
+  @Column()
   profession_id: number;
 
-  @ManyToOne(() => Profession, (profession) => profession.offers)
-  @JoinColumn({ name: 'profession_id' })
-  profession: Profession;
-
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   specialization_id: number;
 
-  @ManyToOne(() => Specialization, (specialization) => specialization.offers)
-  @JoinColumn({ name: 'specialization_id' })
-  specialization: Specialization;
-
-  @Column({ nullable: false })
+  @Column()
   company_id: number;
-
-  @ManyToOne(() => Company, (company) => company.offers)
-  @JoinColumn({ name: 'company_id' })
-  company: Company;
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
+
+  @ManyToMany(() => AgreementType, (agreementType) => agreementType.offers)
+  @JoinColumn({ name: 'agreement_type_id' })
+  agreement_types: AgreementType[];
+
+  @ManyToOne(() => Specialization, (specialization) => specialization.offers)
+  @JoinColumn({ name: 'specialization_id' })
+  specialization: Specialization;
+
+  @ManyToOne(() => Profession, (profession) => profession.offers)
+  @JoinColumn({ name: 'profession_id' })
+  profession: Profession;
+
+  @ManyToOne(() => Company, (company) => company.offers)
+  @JoinColumn({ name: 'company_id' })
+  company: Company;
 }

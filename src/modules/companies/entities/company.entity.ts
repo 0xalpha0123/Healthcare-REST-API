@@ -12,7 +12,6 @@ import {
 import { User } from '../../auth/user.entity';
 import { CompanyPhoto } from './companyPhoto.entity';
 import { CompanyLocation } from './companyLocation.entity';
-import { IsOptional } from 'class-validator';
 import { Offer } from 'src/modules/offers/entities/offer.entity';
 
 @Entity()
@@ -23,15 +22,12 @@ export class Company extends BaseEntity {
   @Column()
   name: string;
 
-  @IsOptional()
   @Column({ nullable: true })
   description: string;
 
-  @IsOptional()
   @Column({ nullable: true })
   logo_file_path: string;
 
-  @IsOptional()
   @Column({ nullable: true })
   website_url: string;
 
