@@ -58,7 +58,7 @@ export class Offer extends BaseEntity {
   specialization_id: number;
 
   @ManyToOne(() => Specialization, (specialization) => specialization.offers)
-  @JoinColumn({ name: 'specializtion_id' })
+  @JoinColumn({ name: 'specialization_id' })
   specialization: Specialization;
 
   @Column({ nullable: false })
