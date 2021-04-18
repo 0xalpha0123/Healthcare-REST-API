@@ -4,21 +4,21 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Company } from './company.entity';
-import { IsOptional } from 'class-validator';
-import { Coordinates } from '../../common/interfaces/coordinates.interface';
-import { PointTransformer } from '../../common/transformers/point.transformer';
+import { Coordinates } from '../../../common/interfaces/coordinates.interface';
+import { PointTransformer } from '../../../common/transformers/point.transformer';
+import { Offer } from 'src/modules/offers/entities/offer.entity';
 
 @Entity()
 export class CompanyLocation extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @IsOptional()
   @Column({ nullable: true })
   name: string;
 
@@ -40,13 +40,15 @@ export class CompanyLocation extends BaseEntity {
   @Column()
   building_number: number;
 
-  @IsOptional()
   @Column({ nullable: true })
   room_number: number;
 
   @ManyToOne(() => Company, (company) => company.locations)
   @JoinColumn({ name: 'company_id' })
   company: Company;
+
+  @ManyToMany(() => Offer, (offer) => offer.agreement_types, { cascade: true })
+  offers: Offer[];
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;

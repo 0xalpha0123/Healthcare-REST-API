@@ -24,6 +24,8 @@
     "migration:run": "npm run docker-sh -- npx ts-node ./node_modules/typeorm/cli.js migration:run --config src/config/db-configuration.ts",
     "migration:revert": "npm run docker-sh -- npx ts-node ./node_modules/typeorm/cli.js migration:revert --config src/config/db-configuration.ts",
     "migration:generate": "npm run docker-sh -- npx ts-node ./node_modules/typeorm/cli.js migration:generate --config src/config/db-configuration.ts -n",
+    "seed:run": "npm run docker-sh -- npx ts-node ./node_modules/typeorm/cli.js migration:run  --config src/config/db-configuration.ts -c seed",
+    "seed:revert": "npm run docker-sh -- npx ts-node ./node_modules/typeorm/cli.js migration:revert  --config src/config/db-configuration.ts -c seed",
     "docker-build": "docker-compose up --build -V -d dev"
   },
   "dependencies": {

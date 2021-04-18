@@ -8,7 +8,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Coordinates } from '../../common/interfaces/coordinates.interface';
+import { Coordinates } from '../../../common/interfaces/coordinates.interface';
 
 export class PhotoDto {
   @IsString()
@@ -68,6 +68,7 @@ export class CompanyDto {
   @MaxLength(255)
   website_url: string;
 
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => LocationDto)

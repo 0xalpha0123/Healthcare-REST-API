@@ -18,11 +18,11 @@ import { Company } from './entities/company.entity';
 import { CompaniesService } from './companies.service';
 import { CompanyDto } from './dto/company.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { GetAuthorizedUser } from '../common/decorators/getAuthorizedUser.decorator';
+import { GetAuthorizedUser } from '../../common/decorators/getAuthorizedUser.decorator';
 import { User } from '../auth/user.entity';
 import { S3ManagerService } from '../s3manager/s3-manager.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { File } from '../common/interfaces/file.interface';
+import { File } from '../../common/interfaces/file.interface';
 
 @Controller('companies')
 export class CompaniesController {
@@ -42,6 +42,7 @@ export class CompaniesController {
   findOne(@Param() { id }): Promise<Company> {
     return this.companyService.findOne(id);
   }
+
 
   @UseGuards(AuthGuard())
   @Post()

@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectAwsService } from 'nest-aws-sdk';
 import { S3 } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
-import { AWSConfig } from '../config/configuration';
+import { AWSConfig } from '../../config/configuration';
 import * as crypto from 'crypto';
 import path from 'path';
-import { File } from '../common/interfaces/file.interface';
+import { File } from '../../common/interfaces/file.interface';
 
 export type S3AllowedFolders = 'photos' | 'cvs' | 'logos';
 

@@ -1,6 +1,6 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConnectionOptions } from 'typeorm';
-import DbConfig from './db-configuration';
+import { DbConfig } from './db-configuration';
 
 export interface JSONWebTokenConfig {
   secret: string;

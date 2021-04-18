@@ -1,12 +1,15 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './auth/auth.module';
-import Configuration from './config/configuration';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { CompaniesModule } from './companies/companies.module';
 import { AwsSdkModule } from 'nest-aws-sdk';
 import { S3 } from 'aws-sdk';
-import { S3ManagerModule } from './s3manager/s3-manager.module';
+
+import Configuration from './config/configuration';
+
+import { S3ManagerModule } from './modules/s3manager/s3-manager.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { CompaniesModule } from './modules/companies/companies.module';
+import { OffersModule } from './modules/offers/offers.module';
 
 @Module({
   imports: [
@@ -30,6 +33,7 @@ import { S3ManagerModule } from './s3manager/s3-manager.module';
     }),
     AuthModule,
     CompaniesModule,
+    OffersModule,
     S3ManagerModule,
   ],
   controllers: [],

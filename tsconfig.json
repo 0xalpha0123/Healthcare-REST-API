@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
-    "lib": ["ESNext"],
+    "lib": [
+      "ESNext"
+    ],
     "moduleResolution": "node",
     "module": "CommonJS",
     "noUnusedLocals": true,
@@ -20,7 +22,11 @@
     "outDir": "./dist",
     "baseUrl": "./",
   },
-  "include": ["**/*.ts", "**/*.js", "**/*.yml"],
+  "include": [
+    "**/*.ts",
+    "**/*.js",
+    "**/*.yml"
+  ],
   "exclude": [
     "node_modules/**/*",
     ".vscode/**/*"

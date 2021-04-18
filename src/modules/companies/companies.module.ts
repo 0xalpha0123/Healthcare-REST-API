@@ -16,6 +16,6 @@ import { S3ManagerModule } from '../s3manager/s3-manager.module';
   ],
   providers: [CompaniesService],
   controllers: [CompaniesController],
-  exports: [],
+  exports: [CompaniesService],
 })
 export class CompaniesModule {}
