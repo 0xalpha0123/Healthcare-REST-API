@@ -14,6 +14,9 @@ export class OfferDto {
   @IsOptional()
   agreement_type_ids: number[];
 
+  @IsOptional()
+  company_location_ids: number[];
+
   profession_id: number;
 
   @IsOptional()

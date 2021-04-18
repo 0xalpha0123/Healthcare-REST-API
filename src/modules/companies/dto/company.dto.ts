@@ -68,6 +68,7 @@ export class CompanyDto {
   @MaxLength(255)
   website_url: string;
 
+  @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => LocationDto)

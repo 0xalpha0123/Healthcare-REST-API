@@ -43,6 +43,7 @@ export class CompaniesController {
     return this.companyService.findOne(id);
   }
 
+
   @UseGuards(AuthGuard())
   @Post()
   @HttpCode(201)

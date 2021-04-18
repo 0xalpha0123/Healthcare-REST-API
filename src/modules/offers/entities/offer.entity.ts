@@ -1,10 +1,12 @@
 import { Company } from 'src/modules/companies/entities/company.entity';
+import { CompanyLocation } from 'src/modules/companies/entities/companyLocation.entity';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -53,8 +55,11 @@ export class Offer extends BaseEntity {
   updated_at: Date;
 
   @ManyToMany(() => AgreementType, (agreementType) => agreementType.offers)
-  @JoinColumn({ name: 'agreement_type_id' })
+  @JoinTable()
   agreement_types: AgreementType[];
+  @ManyToMany(() => CompanyLocation, (companyLocation) => companyLocation.offers)
+  @JoinTable()
+  locations: CompanyLocation[];
 
   @ManyToOne(() => Specialization, (specialization) => specialization.offers)
   @JoinColumn({ name: 'specialization_id' })

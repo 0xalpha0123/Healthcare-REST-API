@@ -8,9 +8,11 @@ import {
   Put,
   UseGuards,
   ValidationPipe,
-  Query
+  Query,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { GetAuthorizedUser } from 'src/common/decorators/getAuthorizedUser.decorator';
+import { User } from '../auth/user.entity';
 import { OfferFilterDto } from './dto/offer-filter.dto';
 import { OfferDto } from './dto/offer.dto';
 import { SpecializationFilterDto } from './dto/specialization-filter.dto';
@@ -56,11 +58,11 @@ export class OffersController {
     return this.offersService.findOne(id);
   }
 
-  // @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard())
   @Post()
   @HttpCode(201)
-  create(@Body(ValidationPipe) data: OfferDto): Promise<Offer> {
-    return this.offersService.create(data);
+  create(@Body(ValidationPipe) data: OfferDto, @GetAuthorizedUser() user: User,): Promise<Offer> {
+    return this.offersService.create(data, user);
   }
 
   @UseGuards(AuthGuard())

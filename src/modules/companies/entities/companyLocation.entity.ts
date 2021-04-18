@@ -4,6 +4,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -11,6 +12,7 @@ import {
 import { Company } from './company.entity';
 import { Coordinates } from '../../../common/interfaces/coordinates.interface';
 import { PointTransformer } from '../../../common/transformers/point.transformer';
+import { Offer } from 'src/modules/offers/entities/offer.entity';
 
 @Entity()
 export class CompanyLocation extends BaseEntity {
@@ -44,6 +46,9 @@ export class CompanyLocation extends BaseEntity {
   @ManyToOne(() => Company, (company) => company.locations)
   @JoinColumn({ name: 'company_id' })
   company: Company;
+
+  @ManyToMany(() => Offer, (offer) => offer.agreement_types, { cascade: true })
+  offers: Offer[];
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;

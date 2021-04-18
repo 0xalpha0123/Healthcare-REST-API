@@ -7,15 +7,19 @@ import { AuthModule } from '../auth/auth.module';
 import { AgreementType } from './entities/agreementType.entity';
 import { Profession } from './entities/profession.entity';
 import { Specialization } from './entities/specialization.entity';
+import { CompaniesModule } from '../companies/companies.module';
+import { CompanyLocation } from 'src/modules/companies/entities/companyLocation.entity';
 
 @Module({
   imports: [
     AuthModule,
+    CompaniesModule,
     TypeOrmModule.forFeature([
       Offer,
       AgreementType,
       Profession,
       Specialization,
+      CompanyLocation
     ]),
   ],
   providers: [OffersService],
