@@ -1,3 +1,4 @@
+import { Candidate } from 'src/modules/candidates/entities/candidate.entity';
 import { Company } from 'src/modules/companies/entities/company.entity';
 import { CompanyLocation } from 'src/modules/companies/entities/companyLocation.entity';
 import {
@@ -9,6 +10,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -27,10 +29,10 @@ export class Offer extends BaseEntity {
   @Column()
   description: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   salary_from: number;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   salary_to: number;
 
   @Column({ nullable: true })
@@ -72,4 +74,7 @@ export class Offer extends BaseEntity {
   @ManyToOne(() => Company, (company) => company.offers)
   @JoinColumn({ name: 'company_id' })
   company: Company;
+
+  @OneToMany(() => Candidate, (candidate) => candidate.offer)
+  candidates: Candidate[];
 }
