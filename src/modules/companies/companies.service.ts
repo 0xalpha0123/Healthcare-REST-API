@@ -12,7 +12,7 @@ export class CompaniesService {
     private companyRepository: Repository<Company>,
     @InjectRepository(CompanyPhoto)
     private companyPhotoRepository: Repository<CompanyPhoto>,
-  ) {}
+  ) { }
 
   findAll(): Promise<Company[]> {
     return this.companyRepository.find({
@@ -32,7 +32,7 @@ export class CompaniesService {
         user_id: userId,
       },
       {
-        relations: ['photos', 'locations'],
+        relations: ['photos', 'locations', 'offers'],
       },
     );
   }
