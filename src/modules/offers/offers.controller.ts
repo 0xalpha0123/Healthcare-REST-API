@@ -24,7 +24,7 @@ import { OffersService } from './offers.service';
 
 @Controller('offers')
 export class OffersController {
-  constructor(private offersService: OffersService) {}
+  constructor(private offersService: OffersService) { }
 
   @Get('agreement-types')
   @HttpCode(200)
@@ -61,7 +61,7 @@ export class OffersController {
   @UseGuards(AuthGuard())
   @Post()
   @HttpCode(201)
-  create(@Body(ValidationPipe) data: OfferDto, @GetAuthorizedUser() user: User,): Promise<Offer> {
+  create(@Body(ValidationPipe) data: OfferDto, @GetAuthorizedUser() user: User): Promise<Offer> {
     return this.offersService.create(data, user);
   }
 
