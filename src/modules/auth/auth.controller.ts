@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   Patch,
   Post,
@@ -45,5 +46,11 @@ export class AuthController {
     @GetAuthorizedUser() user: User,
   ) {
     return this.authService.changePassword(authCredentialsDto, user);
+  }
+  
+  @UseGuards(AuthGuard())
+  @Get()
+  getIsAuth() {
+    return;
   }
 }
