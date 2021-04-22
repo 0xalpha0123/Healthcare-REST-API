@@ -11,7 +11,7 @@ import crypto from 'crypto';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-  async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
+  async signUp(authCredentialsDto: AuthCredentialsDto): Promise<User> {
     const { email, password } = authCredentialsDto;
 
     const user = new User();
@@ -28,6 +28,7 @@ export class UserRepository extends Repository<User> {
         throw new InternalServerErrorException(error);
       }
     }
+    return user;
   }
 
   async changePassword(authCredentialsDto: AuthCredentialsDto, userData: User) {
