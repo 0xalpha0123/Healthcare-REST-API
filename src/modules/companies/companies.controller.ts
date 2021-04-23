@@ -20,7 +20,7 @@ import { CompanyDto } from './dto/company.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetAuthorizedUser } from '../../common/decorators/getAuthorizedUser.decorator';
 import { User } from '../auth/user.entity';
-import { S3ManagerService } from '../s3manager/s3-manager.service';
+import { S3ManagerService } from '../../common/services/s3-manager.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { File } from '../../common/interfaces/file.interface';
 

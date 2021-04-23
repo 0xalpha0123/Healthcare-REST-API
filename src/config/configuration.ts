@@ -20,10 +20,17 @@ export interface AWSConfig {
   region: string;
 }
 
+export interface MailgunConfig {
+  apiKey: string,
+  domain: string
+}
+
+
 export interface ConfigI {
   database: ConnectionOptions | TypeOrmModuleOptions;
   jwt: JSONWebTokenConfig;
   aws: AWSConfig;
+  mailgun: MailgunConfig;
 }
 
 export default (): ConfigI => ({
@@ -44,4 +51,8 @@ export default (): ConfigI => ({
     },
     region: 'eu-west-2',
   },
+  mailgun: {
+      apiKey: process.env.MAILGUN_API_KEY,
+      domain: process.env.MAILGUN_DOMAIN
+  }
 });
