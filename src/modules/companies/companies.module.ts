@@ -6,15 +6,14 @@ import { CompaniesService } from './companies.service';
 import { CompanyPhoto } from './entities/companyPhoto.entity';
 import { CompanyLocation } from './entities/companyLocation.entity';
 import { AuthModule } from '../auth/auth.module';
-import { S3ManagerModule } from '../s3manager/s3-manager.module';
+import { S3ManagerService } from 'src/common/services/s3-manager.service';
 
 @Module({
   imports: [
     AuthModule,
     TypeOrmModule.forFeature([Company, CompanyPhoto, CompanyLocation]),
-    S3ManagerModule,
   ],
-  providers: [CompaniesService],
+  providers: [CompaniesService, S3ManagerService],
   controllers: [CompaniesController],
   exports: [CompaniesService],
 })

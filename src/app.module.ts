@@ -6,7 +6,6 @@ import { S3 } from 'aws-sdk';
 
 import Configuration from './config/configuration';
 
-import { S3ManagerModule } from './modules/s3manager/s3-manager.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CompaniesModule } from './modules/companies/companies.module';
 import { OffersModule } from './modules/offers/offers.module';
@@ -35,7 +34,6 @@ import { CandidatesModule } from './modules/candidates/candidates.module';
     AuthModule,
     CompaniesModule,
     OffersModule,
-    S3ManagerModule,
     CandidatesModule
   ],
   controllers: [],

@@ -20,7 +20,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { User } from '../auth/user.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { File } from '../../common/interfaces/file.interface';
-import { S3ManagerService } from '../s3manager/s3-manager.service';
+import { S3ManagerService } from '../../common/services/s3-manager.service';
 
 
 @Controller('candidates')

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { S3ManagerService } from 'src/common/services/s3-manager.service';
 import { AuthModule } from '../auth/auth.module';
 import { CompaniesModule } from '../companies/companies.module';
-import { S3ManagerModule } from '../s3manager/s3-manager.module';
 import { CandidatesController } from './candidates.controller';
 import { CandidatesService } from './candidates.service';
 import { Candidate } from './entities/candidate.entity';
@@ -11,10 +11,9 @@ import { Candidate } from './entities/candidate.entity';
   imports: [
     AuthModule,
     TypeOrmModule.forFeature([Candidate]),
-    S3ManagerModule,
     CompaniesModule
   ],
-  providers: [CandidatesService],
+  providers: [CandidatesService, S3ManagerService],
   controllers: [CandidatesController],
   exports: [],
 })

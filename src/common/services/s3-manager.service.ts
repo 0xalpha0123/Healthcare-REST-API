@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { AWSConfig } from '../../config/configuration';
 import * as crypto from 'crypto';
 import path from 'path';
-import { File } from '../../common/interfaces/file.interface';
+import { File } from '../interfaces/file.interface';
 
 export type S3AllowedFolders = 'photos' | 'cvs' | 'logos';
 
