@@ -12,6 +12,7 @@ import { Offer } from './entities/offer.entity';
 import { Profession } from './entities/profession.entity';
 import { Specialization } from './entities/specialization.entity';
 import { CompanyLocation } from '../companies/entities/companyLocation.entity';
+import { Like } from 'typeorm';
 
 @Injectable()
 export class OffersService {
@@ -30,7 +31,16 @@ export class OffersService {
   ) {}
 
   async findAll(filterDto: OfferFilterDto): Promise<Offer[]> {
-    return await this.offerRepository.find(filterDto);
+
+    const {title, ...restFilters} = filterDto;
+
+    return await this.offerRepository.find({
+      where: {
+        title: Like(`%${filterDto.title || ''}%`),
+        ...restFilters,
+      },
+      relations: ['company', 'company.locations'],
+    });
   }
 
   async findOne(id: number): Promise<Offer> {

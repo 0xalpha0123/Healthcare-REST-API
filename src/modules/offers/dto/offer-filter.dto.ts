@@ -1,4 +1,4 @@
-import {  IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsNumberString, IsOptional, IsString } from 'class-validator';
 
 export class OfferFilterDto {
   @IsOptional()
@@ -17,11 +17,11 @@ export class OfferFilterDto {
   @IsOptional()
   agreement_type_id: number;
 
-  @IsNumber()
+  @IsNumberString()
   @IsOptional()
   profession_id: number;
 
-  @IsNumber()
+  @IsNumberString()
   @IsOptional()
   specialization_id: number;
 
