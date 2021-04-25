@@ -43,6 +43,9 @@ export class CompanyLocation extends BaseEntity {
   @Column({ nullable: true })
   room_number: number;
 
+  @Column()
+  company_id: number;
+
   @ManyToOne(() => Company, (company) => company.locations)
   @JoinColumn({ name: 'company_id' })
   company: Company;

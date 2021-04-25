@@ -2,8 +2,10 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Company } from './entities/company.entity';
 import { Repository } from 'typeorm';
-import { CompanyWithUserDto, PhotoDto } from './dto/company.dto';
+import { CompanyWithUserDto, LocationWithUserDto, PhotoDto } from './dto/company.dto';
 import { CompanyPhoto } from './entities/companyPhoto.entity';
+import { CompanyLocation } from './entities/companyLocation.entity';
+import { User } from '../auth/user.entity';
 
 @Injectable()
 export class CompaniesService {
@@ -12,6 +14,8 @@ export class CompaniesService {
     private companyRepository: Repository<Company>,
     @InjectRepository(CompanyPhoto)
     private companyPhotoRepository: Repository<CompanyPhoto>,
+    @InjectRepository(CompanyLocation)
+    private companyLocationRepository: Repository<CompanyLocation>,
   ) { }
 
   findAll(): Promise<Company[]> {
@@ -25,6 +29,7 @@ export class CompaniesService {
       relations: ['photos', 'locations'],
     });
   }
+
 
   findByUserId(userId): Promise<Company> {
     return this.companyRepository.findOne(
@@ -69,5 +74,24 @@ export class CompaniesService {
 
   deletePhoto(id: number) {
     return this.companyPhotoRepository.delete(id);
+  }
+
+  async createLocation(data: LocationWithUserDto) {
+    const company = await this.findByUserId(data.user_id);
+     if (!company) {
+      throw new BadRequestException('User do not have company');
+    }
+    delete data.user_id;
+    return this.companyLocationRepository.create({...data, company_id: company.id}).save();
+  }
+
+  async deleteLocation(id: number, user: User) {
+    const company = await this.findByUserId(user.id);
+    const location = await this.companyLocationRepository.findOne(id);
+    if (company.id !== location.company_id) {
+      throw new BadRequestException('User cannot delete location of other company');
+    }
+
+    return this.companyLocationRepository.delete(id);
   }
 }
