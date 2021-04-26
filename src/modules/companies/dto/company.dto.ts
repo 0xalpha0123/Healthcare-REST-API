@@ -1,13 +1,10 @@
 import {
-  IsArray,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   MaxLength,
-  ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
 import { Coordinates } from '../../../common/interfaces/coordinates.interface';
 
 export class PhotoDto {
@@ -48,6 +45,8 @@ export class LocationDto {
   @IsNumber()
   @IsOptional()
   room_number?: number;
+
+  company_id: number;
 }
 
 export class CompanyDto {
@@ -60,7 +59,6 @@ export class CompanyDto {
 
   @IsString()
   @IsOptional()
-  @MaxLength(255)
   description: string;
 
   @IsString()
@@ -68,14 +66,19 @@ export class CompanyDto {
   @MaxLength(255)
   website_url: string;
 
+  @IsString()
   @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => LocationDto)
-  locations: LocationDto[];
+  @MaxLength(255)
+  logo_file_path: string;
+
 }
 
 export class CompanyWithUserDto extends CompanyDto {
   @IsNumber()
+  user_id: number;
+}
+
+export class LocationWithUserDto extends LocationDto {
+   @IsNumber()
   user_id: number;
 }
