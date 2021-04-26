@@ -1,8 +1,8 @@
-import { Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import axios, { AxiosInstance } from 'axios';
-import { TpayConfig } from "src/config/configuration";
-import { Bank, BankWithNoId } from "./bank.interface";
+import { TpayConfig } from 'src/config/configuration';
+import { Bank, BankResponse } from './bank.interface';
 
 @Injectable()
 export class PaymentsService {
@@ -13,19 +13,22 @@ export class PaymentsService {
       baseURL: tpayConfig.url,
     });
   }
-  api: AxiosInstance
-  config: TpayConfig
-  async getBanks(): Promise<Bank> {
-    const { data } = await this.api.get(`/groups-${this.config.id}0.js?json`);
+  api: AxiosInstance;
+  config: TpayConfig;
+  async getBanks(): Promise<Bank[]> {
+    const { data }: { data: BankResponse } = await this.api.get(
+      `/groups-${this.config.id}0.js?json`,
+    );
     const excludeIds = [166, 106, 109, 148, 157, 163, 150, 103]; // we use only banks to simplify process
     const banks: Bank[] = [];
-    Object.keys(data).forEach(key => {
+    Object.keys(data).forEach((key) => {
       const id: number = +key;
       if (!excludeIds.includes(id)) {
-        const bank: Bank = { id, ...data[id] }
-        banks.push(bank)
+        const bank: Bank = { id, ...data[id] };
+        banks.push(bank);
       }
-    })
+    });
+
     return banks;
   }
 }

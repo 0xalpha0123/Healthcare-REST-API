@@ -8,3 +8,7 @@ export interface BankWithNoId {
   img: string;
   main_bank_id: string;
 }
+
+export interface BankResponse {
+  [key: string]: BankWithNoId,
+}
