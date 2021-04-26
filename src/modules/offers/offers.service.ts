@@ -12,13 +12,13 @@ import { Offer } from './entities/offer.entity';
 import { Profession } from './entities/profession.entity';
 import { Specialization } from './entities/specialization.entity';
 import { CompanyLocation } from '../companies/entities/companyLocation.entity';
-import { Like } from 'typeorm';
+import { OffersRepository } from './offers.repository';
 
 @Injectable()
 export class OffersService {
   constructor(
-    @InjectRepository(Offer)
-    private offerRepository: Repository<Offer>,
+    @InjectRepository(OffersRepository)
+    private offerRepository: OffersRepository,
     @InjectRepository(Profession)
     private professionRepository: Repository<Profession>,
     @InjectRepository(Specialization)
@@ -31,16 +31,7 @@ export class OffersService {
   ) {}
 
   async findAll(filterDto: OfferFilterDto): Promise<Offer[]> {
-
-    const {title, ...restFilters} = filterDto;
-
-    return await this.offerRepository.find({
-      where: {
-        title: Like(`%${filterDto.title || ''}%`),
-        ...restFilters,
-      },
-      relations: ['company', 'company.locations'],
-    });
+    return await this.offerRepository.findByQuery(filterDto);
   }
 
   async findOne(id: number): Promise<Offer> {
@@ -66,7 +57,9 @@ export class OffersService {
     }
 
     if (data.company_location_ids && data.company_location_ids.length) {
-      offer.locations = await this.companyLocationRepository.findByIds(data.company_location_ids);
+      offer.locations = await this.companyLocationRepository.findByIds(
+        data.company_location_ids,
+      );
     }
 
     return await this.offerRepository.create(offer).save();
@@ -80,7 +73,9 @@ export class OffersService {
     return await this.professionRepository.find();
   }
 
-  async findAllSpecializations(filterDto: SpecializationFilterDto): Promise<Specialization[]> {
+  async findAllSpecializations(
+    filterDto: SpecializationFilterDto,
+  ): Promise<Specialization[]> {
     return await this.specializationRepository.find(filterDto);
   }
 

@@ -4,6 +4,8 @@ import { Company } from './entities/company.entity';
 import { Repository } from 'typeorm';
 import { CompanyWithUserDto, PhotoDto } from './dto/company.dto';
 import { CompanyPhoto } from './entities/companyPhoto.entity';
+import { CompanyLocationRepository } from './repositories/companyLocation.repository';
+import { CompanyLocation } from './entities/companyLocation.entity';
 
 @Injectable()
 export class CompaniesService {
@@ -12,6 +14,8 @@ export class CompaniesService {
     private companyRepository: Repository<Company>,
     @InjectRepository(CompanyPhoto)
     private companyPhotoRepository: Repository<CompanyPhoto>,
+    @InjectRepository(CompanyLocationRepository)
+    private companyLocationRepository: CompanyLocationRepository,
   ) { }
 
   findAll(): Promise<Company[]> {
@@ -69,5 +73,9 @@ export class CompaniesService {
 
   deletePhoto(id: number) {
     return this.companyPhotoRepository.delete(id);
+  }
+
+  findUniqueLocations(): Promise<CompanyLocation[]> {
+    return this.companyLocationRepository.findUniqueLocations();
   }
 }

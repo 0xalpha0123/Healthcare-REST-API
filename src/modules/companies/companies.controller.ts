@@ -23,6 +23,7 @@ import { User } from '../auth/user.entity';
 import { S3ManagerService } from '../../common/services/s3-manager.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { File } from '../../common/interfaces/file.interface';
+import { CompanyLocation } from './entities/companyLocation.entity';
 
 @Controller('companies')
 export class CompaniesController {
@@ -37,12 +38,17 @@ export class CompaniesController {
     return this.companyService.findAll();
   }
 
+  @Get('locations')
+  @HttpCode(200)
+  findUniqueLocations(): Promise<CompanyLocation[]> {
+    return this.companyService.findUniqueLocations();
+  }
+
   @Get(':id')
   @HttpCode(200)
   findOne(@Param() { id }): Promise<Company> {
     return this.companyService.findOne(id);
   }
-
 
   @UseGuards(AuthGuard())
   @Post()

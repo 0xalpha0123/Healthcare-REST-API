@@ -52,7 +52,7 @@ export default (): ConfigI => ({
     region: 'eu-west-2',
   },
   mailgun: {
-      apiKey: process.env.MAILGUN_API_KEY,
-      domain: process.env.MAILGUN_DOMAIN
+    apiKey: process.env.MAILGUN_API_KEY,
+    domain: process.env.MAILGUN_DOMAIN,
   }
 });

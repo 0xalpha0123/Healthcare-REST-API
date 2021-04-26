@@ -28,4 +28,8 @@ export class OfferFilterDto {
   @IsNumber()
   @IsOptional()
   company_id: number;
+
+  @IsString()
+  @IsOptional()
+  city: string;
 }
