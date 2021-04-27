@@ -26,11 +26,15 @@ export interface MailgunConfig {
 }
 
 export interface TpayConfig {
-    url: string,
-    id: string,
-    api_password: string,
-    api_key: string,
-    security_code: string
+  url: string,
+  id: string,
+  api_password: string,
+  api_key: string,
+  security_code: string,
+  result_url: string,
+  result_email: string,
+  return_url: string,
+  return_error_url: string
 }
 
 
@@ -39,7 +43,7 @@ export interface ConfigI {
   jwt: JSONWebTokenConfig;
   aws: AWSConfig;
   mailgun: MailgunConfig;
-  tpay: any;
+  tpay: TpayConfig;
 }
 
 export default (): ConfigI => ({
@@ -61,14 +65,18 @@ export default (): ConfigI => ({
     region: 'eu-west-2',
   },
   mailgun: {
-      apiKey: process.env.MAILGUN_API_KEY,
-      domain: process.env.MAILGUN_DOMAIN
+    apiKey: process.env.MAILGUN_API_KEY,
+    domain: process.env.MAILGUN_DOMAIN
   },
   tpay: {
     url: process.env.TPAY_API_URL,
     id: process.env.TPAY_ID,
     api_password: process.env.TPAY_API_PASSWORD,
     api_key: process.env.TPAY_API_KEY,
-    security_code: process.env.TPAY_SECURITY_CODE
+    security_code: process.env.TPAY_SECURITY_CODE,
+    result_url: process.env.TPAY_RESULT_URL,
+    result_email: process.env.TPAY_RESULT_EMAIL,
+    return_url: process.env.TPAY_RETURN_URL,
+    return_error_url: process.env.TPAY_RETURN_ERROR_URL
   }
 });

@@ -29,7 +29,7 @@ export class CompaniesController {
   constructor(
     private companyService: CompaniesService,
     private s3ManagerService: S3ManagerService,
-  ) {}
+  ) { }
 
   @Get()
   @HttpCode(200)
@@ -50,7 +50,7 @@ export class CompaniesController {
     return this.companyService.findOne(id);
   }
 
- 
+
 
 
   @UseGuards(AuthGuard())
@@ -128,7 +128,7 @@ export class CompaniesController {
     @GetAuthorizedUser() user: User,
     @Body() data: LocationWithUserDto
   ) {
-    return this.companyService.createLocation({...data, user_id: user.id});
+    return this.companyService.createLocation({ ...data, user_id: user.id });
   }
 
   @UseGuards(AuthGuard())

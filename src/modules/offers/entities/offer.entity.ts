@@ -1,6 +1,7 @@
 import { Candidate } from 'src/modules/candidates/entities/candidate.entity';
 import { Company } from 'src/modules/companies/entities/company.entity';
 import { CompanyLocation } from 'src/modules/companies/entities/companyLocation.entity';
+import { Payment } from 'src/modules/payments/payment.entity';
 import {
   BaseEntity,
   Column,
@@ -77,4 +78,11 @@ export class Offer extends BaseEntity {
 
   @OneToMany(() => Candidate, (candidate) => candidate.offer)
   candidates: Candidate[];
+
+  @OneToMany(
+    () => Payment,
+    (payment) => payment.offer,
+    { cascade: true },
+  )
+  payments: Payment[];
 }
