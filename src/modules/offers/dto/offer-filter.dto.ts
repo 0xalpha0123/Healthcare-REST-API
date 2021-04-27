@@ -5,11 +5,11 @@ export class OfferFilterDto {
   @IsString()
   title: string;
 
-  @IsNumber()
+  @IsNumberString()
   @IsOptional()
   salary_from?: number;
 
-  @IsNumber()
+  @IsNumberString()
   @IsOptional()
   salary_to?: number;
 

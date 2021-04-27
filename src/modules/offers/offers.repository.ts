@@ -6,7 +6,7 @@ import { OfferFilterDto } from './dto/offer-filter.dto';
 export class OffersRepository extends Repository<Offer> {
   async findByQuery(filterDto: OfferFilterDto): Promise<Offer[]> {
 
-    const { title, city, ...restFilters } = filterDto;
+    const { title, city, salary_from: salaryFrom, salary_to: salaryTo, ...restFilters } = filterDto;
     console.log(restFilters);
 
     return this.createQueryBuilder('offer')
@@ -19,6 +19,8 @@ export class OffersRepository extends Repository<Offer> {
       .andWhere('offer.title like :title', { title: `%${title || ''}%` })
       .andWhere('location.city like :city', { city: `%${city || ''}%` })
       .andWhere('offer.paid_till > :now', { now: new Date().toISOString() })
+      .andWhere('offer.salary_to <= :salaryTo', { salaryTo })
+      .andWhere('offer.salary_from >= :salaryFrom', { salaryFrom })
       .getMany();
   }
 }
