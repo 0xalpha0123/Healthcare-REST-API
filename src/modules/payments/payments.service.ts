@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios, { AxiosInstance } from 'axios';
 import { TpayConfig } from 'src/config/configuration';
@@ -11,6 +11,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Payment } from './payment.entity';
 import { Repository } from 'typeorm';
 import PaymentStatus from './paymentStatus.enum';
+import NotificationDto from './notification.dto';
 
 
 @Injectable()
@@ -75,8 +76,50 @@ export class PaymentsService {
       name: companyName,
       language: 'PL'
     };
+
     const { data } = await this.api.post(`/api/gw/${api_key}/transaction/create`, requestBody);
     await this.paymentRepository.create({ title: data.title, crc, amount, extension_days: extensionDays, offer_id: offerId, status: PaymentStatus.IN_PROGRESS }).save()
     return data.url;
+  }
+
+
+
+  async handleNotification(notificationDto: NotificationDto): Promise<void> {
+    const { tr_status, tr_error, tr_crc, tr_paid, md5sum, id } = notificationDto;
+
+    let payment: any;
+
+    try {
+      if (tr_status !== 'TRUE' || tr_error !== 'none') {
+        throw new Error('Unexpected error');
+      }
+
+      payment = await this.paymentRepository.findOne({ crc: tr_crc }, {
+        relations: ['offer'],
+      });
+      if (!payment) {
+        throw new Error('Payment with provided crc not found');
+      }
+      if (md5sum !== md5(String(id) + String(payment.amount) + payment.crc + this.config.security_code)) {
+        throw new Error('Incorrect md5sum value');
+      }
+      if (+tr_paid !== +payment.amount) {
+        throw new Error('Incorrect tr_paid value');
+      }
+    } catch (error) {
+      if (payment) {
+        payment.status = PaymentStatus.CANCELED;
+        await payment.save();
+      }
+      throw new BadRequestException(error);
+    }
+
+    payment.status = PaymentStatus.SUCCESS;
+    let paidTill = payment.offer.paid_till ? new Date(payment.offer.paid_till) : new Date();
+    paidTill.setDate(paidTill.getDate() + payment.extension_days);
+    payment.offer.paid_till = paidTill;
+    await payment.save();
+    await payment.offer.save();
+
   }
 }
