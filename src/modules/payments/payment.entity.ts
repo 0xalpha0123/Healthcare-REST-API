@@ -31,9 +31,9 @@ export class Payment extends BaseEntity {
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
 
-  @ManyToOne(() => Offer, (offer) => offer.payments)
+  @ManyToOne(() => Offer, (offer) => offer.payments, {
+    cascade: true
+  })
   @JoinColumn({ name: 'offer_id' })
   offer: Offer;
-
-
 }

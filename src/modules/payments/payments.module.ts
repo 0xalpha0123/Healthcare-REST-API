@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { HttpModule, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "../auth/auth.module";
 import { Payment } from "./payment.entity";
@@ -11,6 +11,7 @@ import { PaymentsService } from "./payments.service";
     TypeOrmModule.forFeature([
       Payment
     ]),
+    HttpModule
   ],
   providers: [PaymentsService],
   controllers: [PaymentsController],

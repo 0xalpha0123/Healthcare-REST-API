@@ -81,8 +81,12 @@ export class Offer extends BaseEntity {
 
   @OneToMany(
     () => Payment,
-    (payment) => payment.offer,
-    { cascade: true },
-  )
+    (payment) => payment.offer)
   payments: Payment[];
+
+  extendValidity(days: number) {
+    let paidTill = this.paid_till ? new Date(this.paid_till) : new Date();
+    paidTill.setDate(paidTill.getDate() + days);
+    this.paid_till = paidTill;
+  }
 }

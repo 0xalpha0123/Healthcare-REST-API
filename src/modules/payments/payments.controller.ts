@@ -18,7 +18,6 @@ import TransactionDto from './transaction.dto';
 export class PaymentsController {
   constructor(private paymentsService: PaymentsService,
   ) { }
-
   @Get('banks')
   @HttpCode(200)
   findAll(): Promise<Bank[]> {
