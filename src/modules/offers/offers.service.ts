@@ -35,7 +35,9 @@ export class OffersService {
   }
 
   async findOne(id: number): Promise<Offer> {
-    const foundOffer = await this.offerRepository.findOne(id);
+    const foundOffer = await this.offerRepository.findOne(id, {
+      relations: ['company', 'specialization', 'profession'],
+    });
     if (!foundOffer) {
       throw new NotFoundException(`Offer with ID "${id}" not found`);
     }

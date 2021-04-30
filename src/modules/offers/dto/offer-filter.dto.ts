@@ -32,4 +32,8 @@ export class OfferFilterDto {
   @IsString()
   @IsOptional()
   city: string;
+
+  @IsString()
+  @IsOptional()
+  order: string;
 }
