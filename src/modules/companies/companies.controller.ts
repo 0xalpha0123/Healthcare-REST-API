@@ -29,7 +29,7 @@ export class CompaniesController {
   constructor(
     private companyService: CompaniesService,
     private s3ManagerService: S3ManagerService,
-  ) {}
+  ) { }
 
   @Get()
   @HttpCode(200)
@@ -49,9 +49,6 @@ export class CompaniesController {
   findOne(@Param() { id }): Promise<Company> {
     return this.companyService.findOne(id);
   }
-
- 
-
 
   @UseGuards(AuthGuard())
   @Post()
@@ -128,7 +125,7 @@ export class CompaniesController {
     @GetAuthorizedUser() user: User,
     @Body() data: LocationWithUserDto
   ) {
-    return this.companyService.createLocation({...data, user_id: user.id});
+    return this.companyService.createLocation({ ...data, user_id: user.id });
   }
 
   @UseGuards(AuthGuard())

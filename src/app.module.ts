@@ -10,6 +10,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { CompaniesModule } from './modules/companies/companies.module';
 import { OffersModule } from './modules/offers/offers.module';
 import { CandidatesModule } from './modules/candidates/candidates.module';
+import { PaymentsModule } from './modules/payments/payments.module';
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import { CandidatesModule } from './modules/candidates/candidates.module';
     AuthModule,
     CompaniesModule,
     OffersModule,
-    CandidatesModule
+    CandidatesModule,
+    PaymentsModule
   ],
   controllers: [],
   providers: [],
