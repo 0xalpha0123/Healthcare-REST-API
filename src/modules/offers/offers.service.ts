@@ -27,14 +27,14 @@ export class OffersService {
     private companiesService: CompaniesService,
     @InjectRepository(CompanyLocation)
     private companyLocationRepository: Repository<CompanyLocation>,
-  ) {}
+  ) { }
 
   async findAll(filterDto: OfferFilterDto): Promise<Offer[]> {
     return await this.offerRepository.find(filterDto);
   }
 
   async findOne(id: number): Promise<Offer> {
-    const foundOffer = await this.offerRepository.findOne(id);
+    const foundOffer = await this.offerRepository.findOne(id, { relations: ['agreement_types', 'locations'] });
     if (!foundOffer) {
       throw new NotFoundException(`Offer with ID "${id}" not found`);
     }
@@ -51,19 +51,47 @@ export class OffersService {
 
     const offer: FinalOfferDto = { ...data, company_id: company.id };
 
-    if (data.agreement_type_ids && data.agreement_type_ids.length) {
+    if (data.agreement_type_ids) {
       offer.agreement_types = await this.agreementTypeRepository.findByIds(data.agreement_type_ids);
     }
 
-    if (data.company_location_ids && data.company_location_ids.length) {
+    if (data.company_location_ids) {
       offer.locations = await this.companyLocationRepository.findByIds(data.company_location_ids);
     }
 
     return await this.offerRepository.create(offer).save();
   }
 
-  async update(id: number, data: OfferDto): Promise<void> {
-    await this.offerRepository.update(id, data);
+  async update(id: number, data: OfferDto, user: User): Promise<void> {
+    const company = await this.companiesService.findByUserId(user.id);
+
+    if (!company) {
+      throw new BadRequestException('User have to create company first');
+    }
+    const companyOffersIds = company.offers.map(el => el.id);
+    if (!companyOffersIds.includes(+id)) {
+      throw new BadRequestException(`User cannot update others company's offer`);
+    }
+
+    const offer: Offer = await this.offerRepository.findOne(id);
+
+    if (!offer) {
+      throw new NotFoundException('Offer not found')
+    }
+
+    let offerData: any = { ...data, company_id: company.id };
+
+    if (data.agreement_type_ids) {
+      delete offerData.agreement_type_ids;
+      offerData.agreement_types = await this.agreementTypeRepository.findByIds(data.agreement_type_ids);
+    }
+
+    if (data.company_location_ids) {
+      delete offerData.company_location_ids;
+      offerData.locations = await this.companyLocationRepository.findByIds(data.company_location_ids);
+    }
+
+    await this.offerRepository.save({ ...offer, ...offerData });
   }
 
   async findAllProfessions(): Promise<Profession[]> {

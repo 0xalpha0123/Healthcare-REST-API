@@ -1,8 +1,10 @@
-import {  IsOptional } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class OfferDto {
+  @IsNotEmpty()
   title: string;
 
+  @IsNotEmpty()
   description: string;
 
   @IsOptional()
@@ -17,9 +19,13 @@ export class OfferDto {
   @IsOptional()
   company_location_ids: number[];
 
+  @IsNotEmpty()
   profession_id: number;
 
   @IsOptional()
   specialization_id: number;
+
+  @IsNotEmpty()
+  active: boolean;
 
 }
