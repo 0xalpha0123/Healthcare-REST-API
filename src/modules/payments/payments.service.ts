@@ -11,15 +11,35 @@ import { Payment } from './payment.entity';
 import { Repository } from 'typeorm';
 import PaymentStatus from './paymentStatus.enum';
 import NotificationDto from './notification.dto';
+import { Offer } from '../offers/entities/offer.entity';
+import { User } from '../auth/user.entity';
+import { CompaniesService } from '../companies/companies.service';
 
 
 @Injectable()
 export class PaymentsService {
   constructor(private readonly configService: ConfigService, @InjectRepository(Payment)
-  private paymentRepository: Repository<Payment>, private httpService: HttpService) {
+  private paymentRepository: Repository<Payment>, private httpService: HttpService, private companiesService: CompaniesService,
+  ) {
     this.config = this.configService.get('tpay');
   }
   config: TpayConfig;
+
+  async getPaymentsByUserId(userId: Number) {
+    const whereOfferIdIn = (qb) => {
+      const subQuery = qb.subQuery()
+        .select("off.id")
+        .from(Offer, "off")
+        .innerJoin("off.company", "company")
+        .where("company.user_id = :userId", { userId }).getQuery();
+      return `p.offer_id IN ${subQuery}`;
+    }
+    return await this.paymentRepository.createQueryBuilder("p")
+      .leftJoinAndSelect("p.offer", "o")
+      .select(["p.title", "p.extension_days", "p.amount", "p.status", "p.created_at", "o.title"])
+      .where(whereOfferIdIn)
+      .getMany();
+  }
 
   async getBanks(): Promise<Bank[]> {
     const { data }: { data: BankResponse } = await this.httpService.get(
@@ -37,7 +57,7 @@ export class PaymentsService {
     return banks;
   }
 
-  async createTransaction(transactionDto: TransactionDto): Promise<String> {
+  async createTransaction(transactionDto: TransactionDto, user: User): Promise<String> {
     const {
       id,
       api_password,
@@ -48,9 +68,9 @@ export class PaymentsService {
       return_url,
       return_error_url
     } = this.config;
-    const { amount, bankId, extensionDays, companyName, userEmail, offerId } = transactionDto;
+    const { amount, bankId, extensionDays, offerId } = transactionDto;
     const crc = crypto.randomBytes(64).toString('hex');
-
+    const company = await this.companiesService.findByUserId(user.id);
     const requestBody = {
       id: +id,
       api_password,
@@ -60,14 +80,14 @@ export class PaymentsService {
       result_url,
       return_url,
       return_error_url,
-      email: userEmail,
+      email: user.email,
       amount: +amount,
       group: +bankId,
       crc,
       md5sum: md5(String(id) + String(amount) + crc + security_code),
       description: `${t.tpayDescription} ${extensionDays} ${t.tpayDescription2}`,
       merchant_description: 'Healthcare Hireos',
-      name: companyName,
+      name: company.name,
       language: 'PL'
     };
 
