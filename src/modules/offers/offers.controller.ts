@@ -68,7 +68,7 @@ export class OffersController {
   @UseGuards(AuthGuard())
   @Put(':id')
   @HttpCode(204)
-  update(@Param() id: number, @Body() data: OfferDto): Promise<void> {
-    return this.offersService.update(id, data);
+  update(@Param() params, @Body() data: OfferDto, @GetAuthorizedUser() user: User): Promise<void> {
+    return this.offersService.update(params.id, data, user);
   }
 }
