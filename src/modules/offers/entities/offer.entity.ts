@@ -59,7 +59,11 @@ export class Offer extends BaseEntity {
   @ManyToMany(() => AgreementType, (agreementType) => agreementType.offers)
   @JoinTable()
   agreement_types: AgreementType[];
-  @ManyToMany(() => CompanyLocation, (companyLocation) => companyLocation.offers)
+
+  @ManyToMany(
+    () => CompanyLocation,
+    (companyLocation) => companyLocation.offers,
+  )
   @JoinTable()
   locations: CompanyLocation[];
 
