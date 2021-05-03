@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 export default class TransactionDto {
   @IsNotEmpty()
@@ -9,12 +9,6 @@ export default class TransactionDto {
 
   @IsNotEmpty()
   extensionDays: number;
-
-  @IsNotEmpty()
-  companyName: string;
-
-  @IsEmail()
-  userEmail: string;
 
   @IsNotEmpty()
   offerId: number;
