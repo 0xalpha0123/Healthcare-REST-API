@@ -6,12 +6,13 @@ import { CompanyWithUserDto, PhotoDto } from './dto/company.dto';
 import { CompanyPhoto } from './entities/companyPhoto.entity';
 import { CompanyLocationRepository } from './repositories/companyLocation.repository';
 import { CompanyLocation } from './entities/companyLocation.entity';
+import { CompaniesRepository } from './companies.repository';
 
 @Injectable()
 export class CompaniesService {
   constructor(
-    @InjectRepository(Company)
-    private companyRepository: Repository<Company>,
+    @InjectRepository(CompaniesRepository)
+    private companyRepository: CompaniesRepository,
     @InjectRepository(CompanyPhoto)
     private companyPhotoRepository: Repository<CompanyPhoto>,
     @InjectRepository(CompanyLocationRepository)
@@ -25,9 +26,7 @@ export class CompaniesService {
   }
 
   findOne(id: number): Promise<Company> {
-    return this.companyRepository.findOne(id, {
-      relations: ['photos', 'locations'],
-    });
+    return this.companyRepository.findById(id);
   }
 
   findByUserId(userId): Promise<Company> {

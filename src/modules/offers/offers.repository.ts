@@ -14,8 +14,8 @@ export class OffersRepository extends Repository<Offer> {
     const {
       title,
       city,
-      salary_from: salaryFrom,
-      salary_to: salaryTo,
+      salary_from: salaryFrom = 0,
+      salary_to: salaryTo = 20000,
       order = 'latest',
       ...restFilters
     } = filterDto;
