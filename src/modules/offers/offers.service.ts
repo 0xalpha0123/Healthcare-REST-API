@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../auth/user.entity';
@@ -36,7 +40,7 @@ export class OffersService {
 
   async findOne(id: number): Promise<Offer> {
     const foundOffer = await this.offerRepository.findOne(id, {
-      relations: ['company', 'specialization', 'profession'],
+      relations: ['company', 'specialization', 'profession', 'locations'],
     });
     if (!foundOffer) {
       throw new NotFoundException(`Offer with ID "${id}" not found`);
@@ -55,7 +59,9 @@ export class OffersService {
     const offer: FinalOfferDto = { ...data, company_id: company.id };
 
     if (data.agreement_type_ids && data.agreement_type_ids.length) {
-      offer.agreement_types = await this.agreementTypeRepository.findByIds(data.agreement_type_ids);
+      offer.agreement_types = await this.agreementTypeRepository.findByIds(
+        data.agreement_type_ids,
+      );
     }
 
     if (data.company_location_ids && data.company_location_ids.length) {
