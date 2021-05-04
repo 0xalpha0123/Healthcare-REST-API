@@ -4,8 +4,8 @@ import { OfferFilterDto } from './dto/offer-filter.dto';
 
 const orderByParams = {
   latest: ['offer.created_at', 'DESC'],
-  salaryMax: ['offer.salary_to', 'DESC'],
-  salaryMin: ['offer.salary_from', 'ASC'],
+  'salary-max': ['offer.salary_to', 'DESC'],
+  'salary-min': ['offer.salary_from', 'ASC'],
 };
 
 @EntityRepository(Offer)

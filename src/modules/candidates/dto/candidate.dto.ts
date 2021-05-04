@@ -1,4 +1,4 @@
-import { IsOptional, IsUrl } from "class-validator";
+import { IsOptional, IsUrl } from 'class-validator';
 
 export class CandidateDto {
 
@@ -9,7 +9,9 @@ export class CandidateDto {
     @IsOptional()
     message: string;
 
-    @IsUrl()
+    @IsUrl({
+        allow_trailing_dot: true
+    })
     cv_file_path: string;
 
     offer_id: number;

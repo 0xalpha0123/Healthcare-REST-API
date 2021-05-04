@@ -22,37 +22,35 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { File } from '../../common/interfaces/file.interface';
 import { S3ManagerService } from '../../common/services/s3-manager.service';
 
-
 @Controller('candidates')
 export class CandidatesController {
   constructor(
     private candidatesService: CandidatesService,
     private s3ManagerService: S3ManagerService,
-  ) { }
+  ) {}
 
   @UseGuards(AuthGuard())
   @Get()
   @HttpCode(200)
-  findAll(@Query(ValidationPipe) filterDto: CandidateFilterDto, @GetAuthorizedUser() user: User) {
+  findAll(
+    @Query(ValidationPipe) filterDto: CandidateFilterDto,
+    @GetAuthorizedUser() user: User,
+  ) {
     return this.candidatesService.findAll(filterDto, user);
   }
 
   @Post()
   @HttpCode(201)
-  create(@Body(ValidationPipe) data: CandidateDto,): Promise<Candidate> {
+  create(@Body(ValidationPipe) data: CandidateDto): Promise<Candidate> {
     return this.candidatesService.create(data);
   }
-
 
   @Post('upload-cv')
   @HttpCode(201)
   @UseInterceptors(FileInterceptor('file'))
-  async createCV(
-    @UploadedFile() file: File,
-  ) {
-
-    if (file.mimetype !== "application/pdf") {
-      throw new BadRequestException("File must have .pdf extension")
+  async createCV(@UploadedFile() file: File) {
+    if (file.mimetype !== 'application/pdf') {
+      throw new BadRequestException('File must have .pdf extension');
     }
     const upload = await this.s3ManagerService
       .uploadFile('cvs', file)
@@ -62,8 +60,6 @@ export class CandidatesController {
         );
       });
 
-
     return { file_path: upload.Location };
   }
-
 }
