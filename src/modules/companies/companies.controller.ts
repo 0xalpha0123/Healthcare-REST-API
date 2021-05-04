@@ -16,7 +16,7 @@ import {
 } from '@nestjs/common';
 import { Company } from './entities/company.entity';
 import { CompaniesService } from './companies.service';
-import { CompanyDto } from './dto/company.dto';
+import { CompanyDto, LocationWithUserDto } from './dto/company.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetAuthorizedUser } from '../../common/decorators/getAuthorizedUser.decorator';
 import { User } from '../auth/user.entity';
@@ -36,6 +36,13 @@ export class CompaniesController {
   @HttpCode(200)
   findAll(): Promise<Company[]> {
     return this.companyService.findAll();
+  }
+
+  @UseGuards(AuthGuard())
+  @Get('by-user')
+  @HttpCode(200)
+  findUserCompany(@GetAuthorizedUser() user: User) {
+    return this.companyService.findByUserId(user.id);
   }
 
   @Get('locations')
@@ -116,5 +123,45 @@ export class CompaniesController {
     });
 
     return this.companyService.deletePhoto(photo.id);
+  }
+
+  @UseGuards(AuthGuard())
+  @Post('location')
+  @HttpCode(201)
+  async createLocation(
+    @GetAuthorizedUser() user: User,
+    @Body() data: LocationWithUserDto
+  ) {
+    return this.companyService.createLocation({ ...data, user_id: user.id });
+  }
+
+  @UseGuards(AuthGuard())
+  @Delete('location/:id')
+  @HttpCode(201)
+  async deleteLocation(
+    @GetAuthorizedUser() user: User,
+    @Param() { id }
+  ) {
+    return this.companyService.deleteLocation(id, user)
+  }
+
+  @UseGuards(AuthGuard())
+  @Post('upload-logo')
+  @HttpCode(201)
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadLogo(
+    @UploadedFile() file: File,
+  ) {
+
+    const upload = await this.s3ManagerService
+      .uploadFile('logos', file)
+      .catch(() => {
+        throw new BadRequestException(
+          'There was problem during uploading file',
+        );
+      });
+
+
+    return { file_path: upload.Location };
   }
 }
