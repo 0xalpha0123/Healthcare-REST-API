@@ -10,7 +10,7 @@ const orderByParams = {
 
 @EntityRepository(Offer)
 export class OffersRepository extends Repository<Offer> {
-  async findByQuery(filterDto: OfferFilterDto): Promise<Offer[]> {
+  findByQuery(filterDto: OfferFilterDto): Promise<Offer[]> {
     const {
       title,
       city,

@@ -3,7 +3,7 @@ import { CompanyLocation } from '../entities/companyLocation.entity';
 
 @EntityRepository(CompanyLocation)
 export class CompanyLocationRepository extends Repository<CompanyLocation> {
-  async findUniqueLocations(): Promise<CompanyLocation[]> {
+  findUniqueLocations(): Promise<CompanyLocation[]> {
     return this.createQueryBuilder('CompanyLocation')
       .select('city')
       .distinct(true)
