@@ -1,12 +1,15 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import MailService from 'src/common/services/mail.service';
+import { MailService } from '../../common/services/mail.service';
 import { AuthCredentialsDto } from './auth-credentials.dto';
 import { JwtPayload } from './jwt-payload.interface';
 import { User } from './user.entity';
 import { UserRepository } from './user.repository';
 import getEmailTemplate from './email.template';
+import { IncorrectTokenError } from './errors/incorrectToken.error';
+import { InvalidCredentialsError } from './errors/invalidCredentials.error';
+import { InactiveAccountError } from './errors/inactiveAccount.error';
 
 @Injectable()
 export class AuthService {
@@ -19,18 +22,18 @@ export class AuthService {
 
   async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
     const user = await this.userRepository.signUp(authCredentialsDto);
-    await this.mailService.sendMail({
+    this.mailService.sendMail({
       from: 'Healthcare Hireos <hello@healthcare-hireos.com>',
       to: user.email,
       subject: 'Healthcare Hireos - confirm your account',
-      html: getEmailTemplate(user.verification_token)
-    })
+      html: getEmailTemplate(user.verification_token),
+    });
   }
 
   async verifyEmail(verificationToken: string): Promise<void> {
     const user = await this.userRepository.verifyEmail(verificationToken);
     if (!user) {
-      throw new UnauthorizedException('Incorrect verificationToken');
+      throw new IncorrectTokenError();
     }
   }
 
@@ -47,10 +50,10 @@ export class AuthService {
     const user = await this.userRepository.validateUser(authCredentialsDto);
 
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new InvalidCredentialsError();
     }
     if (!user.active) {
-      throw new UnauthorizedException('Inactive account');
+      throw new InactiveAccountError();
     }
     const payload: JwtPayload = { id: user.id, email: user.email };
     const accessToken = await this.jwtService.sign(payload);

@@ -1,20 +1,20 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-
-const mailgun = require('mailgun-js')
+import mailgun from 'mailgun-js';
 
 interface MailBody {
-  from: string,
-  to: string,
-  subject: string,
-  html: string
+  from: string;
+  to: string;
+  subject: string;
+  html: string;
 }
+
 @Injectable()
-class MailService {
+export class MailService {
   private mailer;
   constructor(private readonly configService: ConfigService) {
     const mailgunConfig = this.configService.get('mailgun');
-    this.mailer = mailgun(mailgunConfig)
+    this.mailer = mailgun(mailgunConfig);
   }
 
   sendMail(mailBody: MailBody) {
@@ -22,9 +22,6 @@ class MailService {
       if (error) {
         console.log(error);
       }
-    })
-  } 
-  
+    });
+  }
 }
-
-export default MailService;
