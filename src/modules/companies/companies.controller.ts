@@ -23,13 +23,14 @@ import { User } from '../auth/user.entity';
 import { S3ManagerService } from '../../common/services/s3-manager.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { File } from '../../common/interfaces/file.interface';
+import { CompanyLocation } from './entities/companyLocation.entity';
 
 @Controller('companies')
 export class CompaniesController {
   constructor(
     private companyService: CompaniesService,
     private s3ManagerService: S3ManagerService,
-  ) { }
+  ) {}
 
   @Get()
   @HttpCode(200)
@@ -42,6 +43,12 @@ export class CompaniesController {
   @HttpCode(200)
   findUserCompany(@GetAuthorizedUser() user: User) {
     return this.companyService.findByUserId(user.id);
+  }
+
+  @Get('locations')
+  @HttpCode(200)
+  findUniqueLocations(): Promise<CompanyLocation[]> {
+    return this.companyService.findUniqueLocations();
   }
 
   @Get(':id')

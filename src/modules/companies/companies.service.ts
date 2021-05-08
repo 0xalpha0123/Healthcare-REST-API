@@ -4,18 +4,20 @@ import { Company } from './entities/company.entity';
 import { Repository } from 'typeorm';
 import { CompanyWithUserDto, LocationWithUserDto, PhotoDto } from './dto/company.dto';
 import { CompanyPhoto } from './entities/companyPhoto.entity';
+import { CompanyLocationRepository } from './repositories/companyLocation.repository';
 import { CompanyLocation } from './entities/companyLocation.entity';
+import { CompaniesRepository } from './companies.repository';
 import { User } from '../auth/user.entity';
 
 @Injectable()
 export class CompaniesService {
   constructor(
-    @InjectRepository(Company)
-    private companyRepository: Repository<Company>,
+    @InjectRepository(CompaniesRepository)
+    private companyRepository: CompaniesRepository,
     @InjectRepository(CompanyPhoto)
     private companyPhotoRepository: Repository<CompanyPhoto>,
-    @InjectRepository(CompanyLocation)
-    private companyLocationRepository: Repository<CompanyLocation>,
+    @InjectRepository(CompanyLocationRepository)
+    private companyLocationRepository: CompanyLocationRepository,
   ) { }
 
   findAll(): Promise<Company[]> {
@@ -25,11 +27,8 @@ export class CompaniesService {
   }
 
   findOne(id: number): Promise<Company> {
-    return this.companyRepository.findOne(id, {
-      relations: ['photos', 'locations'],
-    });
+    return this.companyRepository.findById(id);
   }
-
 
   findByUserId(userId): Promise<Company> {
     return this.companyRepository.findOne(
@@ -74,6 +73,10 @@ export class CompaniesService {
 
   deletePhoto(id: number) {
     return this.companyPhotoRepository.delete(id);
+  }
+
+  findUniqueLocations(): Promise<CompanyLocation[]> {
+    return this.companyLocationRepository.findUniqueLocations();
   }
 
   async createLocation(data: LocationWithUserDto) {
