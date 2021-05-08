@@ -56,7 +56,7 @@ describe('AuthController', () => {
     password: 'testingPassword123!',
   };
 
-  describe('signUp', () => {
+  describe('SignUp', () => {
     it('should sign up', async () => {
       jest.spyOn(mailService, 'sendMail').mockImplementation(() => true);
 
