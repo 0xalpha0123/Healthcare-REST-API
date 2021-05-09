@@ -2,12 +2,12 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { EntityRepository, Repository } from 'typeorm';
-import { AuthCredentialsDto } from './auth-credentials.dto';
-import { User } from './user.entity';
+import { AuthCredentialsDto } from '../auth-credentials.dto';
+import { User } from '../user.entity';
 import * as bcrypt from 'bcrypt';
 import crypto from 'crypto';
-import { UserEmailExistsError } from './errors/userEmailExists.error';
-import { InvalidCredentialsError } from './errors/invalidCredentials.error';
+import { UserEmailExistsError } from '../errors/userEmailExists.error';
+import { InvalidCredentialsError } from '../errors/invalidCredentials.error';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {

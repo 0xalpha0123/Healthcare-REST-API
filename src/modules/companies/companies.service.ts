@@ -6,14 +6,15 @@ import { CompanyWithUserDto, LocationWithUserDto, PhotoDto } from './dto/company
 import { CompanyPhoto } from './entities/companyPhoto.entity';
 import { CompanyLocationRepository } from './repositories/companyLocation.repository';
 import { CompanyLocation } from './entities/companyLocation.entity';
-import { CompaniesRepository } from './companies.repository';
+import { CompanyRepository } from './repositories/company.repository';
 import { User } from '../auth/user.entity';
+import { UserHaveCompanyError } from './errors/userHaveCompany.error';
 
 @Injectable()
 export class CompaniesService {
   constructor(
-    @InjectRepository(CompaniesRepository)
-    private companyRepository: CompaniesRepository,
+    @InjectRepository(CompanyRepository)
+    private companyRepository: CompanyRepository,
     @InjectRepository(CompanyPhoto)
     private companyPhotoRepository: Repository<CompanyPhoto>,
     @InjectRepository(CompanyLocationRepository)
@@ -22,7 +23,7 @@ export class CompaniesService {
 
   findAll(): Promise<Company[]> {
     return this.companyRepository.find({
-      relations: ['photos', 'locations'],
+      relations: ['photos', 'locations', 'offers'],
     });
   }
 
@@ -45,7 +46,7 @@ export class CompaniesService {
     const company = await this.findByUserId(data.user_id);
 
     if (company) {
-      throw new BadRequestException('User already have company');
+      throw new UserHaveCompanyError()
     }
 
     return this.companyRepository.create(data).save();

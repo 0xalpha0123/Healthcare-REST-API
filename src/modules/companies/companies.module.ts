@@ -6,7 +6,7 @@ import { CompanyPhoto } from './entities/companyPhoto.entity';
 import { AuthModule } from '../auth/auth.module';
 import { S3ManagerService } from 'src/common/services/s3-manager.service';
 import { CompanyLocationRepository } from './repositories/companyLocation.repository';
-import { CompaniesRepository } from './companies.repository';
+import { CompanyRepository } from './repositories/company.repository';
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { CompaniesRepository } from './companies.repository';
     TypeOrmModule.forFeature([
       CompanyPhoto,
       CompanyLocationRepository,
-      CompaniesRepository,
+      CompanyRepository,
     ]),
   ],
   providers: [CompaniesService, S3ManagerService],

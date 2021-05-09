@@ -2,10 +2,10 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MailService } from '../../common/services/mail.service';
-import { UserRepository } from './user.repository';
+import { UserRepository } from './repositories/user.repository';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { mockedConfigService, mockedDb } from '../../utils/mocks';
+import { mockedConfigService, mockedDb, userCredentialsDto } from '../../utils/mocks';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user.entity';
@@ -15,16 +15,16 @@ import { InvalidCredentialsError } from './errors/invalidCredentials.error';
 import { InactiveAccountError } from './errors/inactiveAccount.error';
 
 describe('AuthController', () => {
+  let moduleRef: TestingModule;
   let authController: AuthController;
   let mailService: MailService;
-  let moduleRef: TestingModule;
   let userRepository: UserRepository;
 
   beforeEach(async () => {
     moduleRef = await Test.createTestingModule({
       imports: [
         PassportModule.register({ defaultStrategy: 'jwt' }),
-        TypeOrmModule.forRoot(mockedDb([User])),
+        TypeOrmModule.forRoot(mockedDb),
         TypeOrmModule.forFeature([UserRepository]),
       ],
       controllers: [AuthController],
@@ -45,26 +45,23 @@ describe('AuthController', () => {
     authController = moduleRef.get<AuthController>(AuthController);
     mailService = moduleRef.get<MailService>(MailService);
     userRepository = moduleRef.get<UserRepository>(UserRepository);
+
+    jest.spyOn(mailService, 'sendMail').mockImplementation(() => true);
   });
 
-  afterAll(async () => {
+  afterEach(async () => {
     await moduleRef.close();
   });
 
-  const userCredentialsDto = {
-    email: 'email@gmail.com',
-    password: 'testingPassword123!',
-  };
-
   describe('SignUp', () => {
     it('should sign up', async () => {
-      jest.spyOn(mailService, 'sendMail').mockImplementation(() => true);
-
       await authController.signUp(userCredentialsDto);
     });
 
     it('should not sign up - email taken', async () => {
       let error;
+
+      await authController.signUp(userCredentialsDto);
 
       try {
         await authController.signUp(userCredentialsDto);
@@ -78,6 +75,8 @@ describe('AuthController', () => {
 
   describe('ValidateToken', () => {
     it('should verify account', async () => {
+      await authController.signUp(userCredentialsDto);
+
       const userData: User = await userRepository.findOne({
         email: userCredentialsDto.email,
       });
@@ -104,6 +103,18 @@ describe('AuthController', () => {
 
   describe('SignIn', () => {
     it('should log in', async () => {
+      await authController.signUp(userCredentialsDto);
+
+      const userData: User = await userRepository.findOne({
+        email: userCredentialsDto.email,
+      });
+
+      expect(userData).toBeDefined();
+
+      await authController.verifyEmail({
+        verificationToken: userData.verification_token,
+      });
+
       await authController.signIn(userCredentialsDto);
     });
 
@@ -119,17 +130,11 @@ describe('AuthController', () => {
 
     it('should not log in - account not activated', async () => {
       let error;
-      jest.spyOn(mailService, 'sendMail').mockImplementation(() => true);
 
-      const newUserCredentials = {
-        email: `${userCredentialsDto}1`,
-        password: userCredentialsDto.password,
-      };
-
-      await authController.signUp(newUserCredentials);
+      await authController.signUp(userCredentialsDto);
 
       try {
-        await authController.signIn(newUserCredentials);
+        await authController.signIn(userCredentialsDto);
       } catch (e) {
         error = e;
       }
@@ -139,11 +144,28 @@ describe('AuthController', () => {
   });
 
   describe('ChangePassword', () => {
-    it('should change password', async () => {
-      // todo change password tests and auth
-      // await authController.changePassword({
-      //   email: userCredentialsDto.email,
-      // });
+    it('should change password and log in', async () => {
+      await authController.signUp(userCredentialsDto);
+
+      const userData: User = await userRepository.findOne({
+        email: userCredentialsDto.email,
+      });
+
+      await authController.verifyEmail({
+        verificationToken: userData.verification_token,
+      });
+
+      const newPassword = 'newPasswordTest777';
+
+      await authController.changePassword(
+        { ...userCredentialsDto, password: newPassword },
+        userData,
+      );
+
+      await authController.signIn({
+        ...userCredentialsDto,
+        password: newPassword,
+      });
     });
   });
 });

@@ -5,7 +5,7 @@ import { MailService } from '../../common/services/mail.service';
 import { AuthCredentialsDto } from './auth-credentials.dto';
 import { JwtPayload } from './jwt-payload.interface';
 import { User } from './user.entity';
-import { UserRepository } from './user.repository';
+import { UserRepository } from './repositories/user.repository';
 import getEmailTemplate from './email.template';
 import { IncorrectTokenError } from './errors/incorrectToken.error';
 import { InvalidCredentialsError } from './errors/invalidCredentials.error';
