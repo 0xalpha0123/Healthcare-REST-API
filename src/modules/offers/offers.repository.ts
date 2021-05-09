@@ -24,7 +24,8 @@ export class OffersRepository extends Repository<Offer> {
 
     return this.createQueryBuilder('offer')
       .leftJoinAndSelect('offer.company', 'company')
-      .leftJoinAndSelect('offer.locations', 'locations')
+      .innerJoin('offer.locations', 'locationsCondition')
+      .leftJoinAndSelect('offer.agreement_types', 'agreement_types')
       .leftJoinAndSelect('offer.specialization', 'specialization')
       .leftJoinAndSelect('offer.profession', 'profession')
       .where({
@@ -32,10 +33,11 @@ export class OffersRepository extends Repository<Offer> {
         active: true,
       })
       .andWhere('offer.title like :title', { title: `%${title || ''}%` })
-      .andWhere('locations.city like :city', { city: `%${city || ''}%` })
+      .andWhere('locationsCondition.city like :city', { city: `%${city || ''}%` })
       .andWhere('offer.paid_till > :now', { now: new Date().toISOString() })
       .andWhere('offer.salary_to <= :salaryTo', { salaryTo })
-      .andWhere('offer.salary_from >= :salaryFrom', { salaryFrom })
+      .andWhere('offer.salary_to >= :salaryFrom', { salaryFrom })
+      .leftJoinAndSelect('offer.locations', 'locations')
       .orderBy(orderParam[0], orderParam[1])
       .getMany();
   }
