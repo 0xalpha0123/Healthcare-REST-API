@@ -83,9 +83,7 @@ export class Offer extends BaseEntity {
   @OneToMany(() => Candidate, (candidate) => candidate.offer)
   candidates: Candidate[];
 
-  @OneToMany(
-    () => Payment,
-    (payment) => payment.offer)
+  @OneToMany(() => Payment, (payment) => payment.offer)
   payments: Payment[];
 
   extendValidity(days: number) {

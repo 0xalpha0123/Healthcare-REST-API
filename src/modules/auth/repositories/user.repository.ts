@@ -1,6 +1,4 @@
-import {
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { InternalServerErrorException } from '@nestjs/common';
 import { EntityRepository, Repository } from 'typeorm';
 import { AuthCredentialsDto } from '../auth-credentials.dto';
 import { User } from '../user.entity';

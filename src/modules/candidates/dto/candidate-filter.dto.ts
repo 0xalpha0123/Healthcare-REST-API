@@ -1,5 +1,3 @@
 export class CandidateFilterDto {
-
-    offer_id: number;
-
+  offer_id: number;
 }

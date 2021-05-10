@@ -5,7 +5,12 @@ import { MailService } from '../../common/services/mail.service';
 import { UserRepository } from './repositories/user.repository';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { mockedConfigService, mockedDb, userCredentialsDto } from '../../utils/mocks';
+import {
+  mockedConfigService,
+  mockedDb,
+  mockedMailService,
+  userCredentialsDto,
+} from '../../utils/mocks';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user.entity';
@@ -17,7 +22,6 @@ import { InactiveAccountError } from './errors/inactiveAccount.error';
 describe('AuthController', () => {
   let moduleRef: TestingModule;
   let authController: AuthController;
-  let mailService: MailService;
   let userRepository: UserRepository;
 
   beforeEach(async () => {
@@ -30,7 +34,10 @@ describe('AuthController', () => {
       controllers: [AuthController],
       providers: [
         AuthService,
-        MailService,
+        {
+          provide: MailService,
+          useValue: mockedMailService,
+        },
         {
           provide: ConfigService,
           useValue: mockedConfigService,
@@ -43,10 +50,7 @@ describe('AuthController', () => {
     }).compile();
 
     authController = moduleRef.get<AuthController>(AuthController);
-    mailService = moduleRef.get<MailService>(MailService);
     userRepository = moduleRef.get<UserRepository>(UserRepository);
-
-    jest.spyOn(mailService, 'sendMail').mockImplementation(() => true);
   });
 
   afterEach(async () => {

@@ -6,6 +6,8 @@ import { CompanyPhoto } from './entities/companyPhoto.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   companyDataDto,
+  fileDto,
+  locationDto,
   mockedDb,
   mockedS3Service,
   userCredentialsDto,
@@ -15,16 +17,18 @@ import { UserRepository } from '../auth/repositories/user.repository';
 import { User } from '../auth/user.entity';
 import { CompaniesService } from './companies.service';
 import { PassportModule } from '@nestjs/passport';
-import { UserHaveCompanyError } from './errors/userHaveCompany.error';
+import { UserWithCompanyError } from './errors/userWithCompany.error';
+import { Repository } from 'typeorm';
+import { UserWithoutCompanyError } from './errors/userWithoutCompany.error';
 
 describe('CompaniesController', () => {
   let moduleRef: TestingModule;
   let companyController: CompaniesController;
 
   let userRepository: UserRepository;
-  // let companyRepository: CompanyRepository;
-  // let companyLocationRepository: CompanyLocationRepository;
-  // let companyPhotoRepository: Repository<CompanyPhoto>;
+  let companyRepository: CompanyRepository;
+  let companyLocationRepository: CompanyLocationRepository;
+  let companyPhotoRepository: Repository<CompanyPhoto>;
 
   beforeEach(async () => {
     moduleRef = await Test.createTestingModule({
@@ -50,11 +54,13 @@ describe('CompaniesController', () => {
 
     companyController = moduleRef.get<CompaniesController>(CompaniesController);
     userRepository = moduleRef.get<UserRepository>(UserRepository);
-    // companyRepository = moduleRef.get<CompanyRepository>(CompanyRepository);
-    // companyLocationRepository = moduleRef.get<CompanyLocationRepository>(
-    //   CompanyLocationRepository,
-    // );
-    // companyPhotoRepository = moduleRef.get<Repository<CompanyPhoto>>
+    companyRepository = moduleRef.get<CompanyRepository>(CompanyRepository);
+    companyLocationRepository = moduleRef.get<CompanyLocationRepository>(
+      CompanyLocationRepository,
+    );
+
+    companyPhotoRepository = moduleRef.get('CompanyPhotoRepository');
+
     await userRepository.save(userCredentialsDto);
   });
 
@@ -86,19 +92,16 @@ describe('CompaniesController', () => {
         error = e;
       }
 
-      expect(error).toStrictEqual(new UserHaveCompanyError());
+      expect(error).toStrictEqual(new UserWithCompanyError());
     });
   });
 
-  describe('Find', () => {
+  describe('FindCompany', () => {
     it('should return array', async () => {
       const userData: User = await userRepository.findOne({
         email: userCredentialsDto.email,
       });
-      const company = await companyController.create(
-        companyDataDto,
-        userData,
-      );
+      const company = await companyController.create(companyDataDto, userData);
       const result = await companyController.findAll();
 
       expect(result).toHaveLength(1);
@@ -126,6 +129,124 @@ describe('CompaniesController', () => {
       const result = await companyController.findUserCompany(userData);
 
       expect(company).toMatchObject(result);
+    });
+  });
+
+  describe('UpdateCompany', () => {
+    it('should update company', async () => {
+      const userData: User = await userRepository.findOne({
+        email: userCredentialsDto.email,
+      });
+      let company = await companyController.create(companyDataDto, userData);
+
+      const updatedCompany = { ...company, name: 'newName' };
+      await companyController.update(updatedCompany, userData);
+
+      company = await companyRepository.findById(updatedCompany.id);
+
+      expect(company.name).toEqual(updatedCompany.name);
+    });
+  });
+
+  describe('UploadPhoto', () => {
+    it('should upload photo', async () => {
+      const userData: User = await userRepository.findOne({
+        email: userCredentialsDto.email,
+      });
+      await companyController.create(companyDataDto, userData);
+
+      const upload = await companyController.createPhoto(fileDto, userData);
+
+      expect(upload).toBeDefined();
+    });
+
+    it('should remove photo', async () => {
+      const userData: User = await userRepository.findOne({
+        email: userCredentialsDto.email,
+      });
+      await companyController.create(companyDataDto, userData);
+
+      const upload = await companyController.createPhoto(fileDto, userData);
+
+      expect(upload).toBeDefined();
+
+      await companyController.deletePhoto({ id: upload.id }, userData);
+
+      const companyPhoto = await companyPhotoRepository.findOne(upload.id);
+
+      expect(companyPhoto).toBeUndefined();
+    });
+  });
+
+  describe('CreateLocation', () => {
+    it('should create location', async () => {
+      const userData: User = await userRepository.findOne({
+        email: userCredentialsDto.email,
+      });
+      const company = await companyController.create(companyDataDto, userData);
+
+      const companyLocation = await companyController.createLocation(userData, {
+        ...locationDto(company.id),
+        user_id: userData.id,
+      });
+
+      expect(companyLocation).toBeDefined();
+    });
+
+    it('should not create location - ', async () => {
+      const userData: User = await userRepository.findOne({
+        email: userCredentialsDto.email,
+      });
+
+      let error;
+
+      try {
+        await companyController.createLocation(userData, {
+          ...locationDto(1),
+          user_id: userData.id,
+        });
+      } catch (e) {
+        error = e;
+      }
+
+      expect(error).toStrictEqual(new UserWithoutCompanyError());
+    });
+
+    it('should remove location', async () => {
+      const userData: User = await userRepository.findOne({
+        email: userCredentialsDto.email,
+      });
+      const company = await companyController.create(companyDataDto, userData);
+
+      let companyLocation = await companyController.createLocation(userData, {
+        ...locationDto(company.id),
+        user_id: userData.id,
+      });
+
+      expect(companyLocation).toBeDefined();
+
+      await companyController.deleteLocation(userData, {
+        id: companyLocation.id,
+      });
+
+      companyLocation = await companyLocationRepository.findOne(
+        companyLocation.id,
+      );
+
+      expect(companyLocation).toBeUndefined();
+    });
+  });
+
+  describe('UploadLogo', () => {
+    it('should upload logo', async () => {
+      const userData: User = await userRepository.findOne({
+        email: userCredentialsDto.email,
+      });
+      await companyController.create(companyDataDto, userData);
+
+      const upload = await companyController.createPhoto(fileDto, userData);
+
+      expect(upload).toBeDefined();
     });
   });
 });

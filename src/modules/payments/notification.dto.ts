@@ -18,5 +18,4 @@ export default class NotificationDto {
 
   @IsNotEmpty()
   md5sum: string;
-
 }
