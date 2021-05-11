@@ -13,7 +13,7 @@ export class Payment extends BaseEntity {
   @Column()
   crc: string;
 
-  @Column({ type: 'money' })
+  @Column({ type: 'decimal' })
   amount: number;
 
   @Column()

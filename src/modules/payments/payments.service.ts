@@ -26,7 +26,7 @@ export class PaymentsService {
   config: TpayConfig;
 
   async getPaymentsByUserId(userId: Number) {
-    const whereOfferIdIn = (qb) => {
+    const whereoffer_idIn = (qb) => {
       const subQuery = qb.subQuery()
         .select("off.id")
         .from(Offer, "off")
@@ -37,7 +37,7 @@ export class PaymentsService {
     return await this.paymentRepository.createQueryBuilder("p")
       .leftJoinAndSelect("p.offer", "o")
       .select(["p.title", "p.extension_days", "p.amount", "p.status", "p.created_at", "o.title"])
-      .where(whereOfferIdIn)
+      .where(whereoffer_idIn)
       .getMany();
   }
 
@@ -68,7 +68,7 @@ export class PaymentsService {
       return_url,
       return_error_url
     } = this.config;
-    const { amount, bankId, extensionDays, offerId } = transactionDto;
+    const { amount, bank_id, extension_days, offer_id } = transactionDto;
     const crc = crypto.randomBytes(64).toString('hex');
     const company = await this.companiesService.findByUserId(user.id);
     const requestBody = {
@@ -82,17 +82,17 @@ export class PaymentsService {
       return_error_url,
       email: user.email,
       amount: +amount,
-      group: +bankId,
+      group: +bank_id,
       crc,
       md5sum: md5(String(id) + String(amount) + crc + security_code),
-      description: `${t.tpayDescription} ${extensionDays} ${t.tpayDescription2}`,
+      description: `${t.tpayDescription} ${extension_days} ${t.tpayDescription2}`,
       merchant_description: 'Healthcare Hireos',
       name: company.name,
       language: 'PL'
     };
 
     const { data } = await this.httpService.post(`${this.config.url}/api/gw/${api_key}/transaction/create`, requestBody).toPromise();
-    await this.paymentRepository.create({ title: data.title, crc, amount, extension_days: extensionDays, offer_id: offerId, status: PaymentStatus.IN_PROGRESS }).save()
+    await this.paymentRepository.create({ title: data.title, crc, amount, extension_days: extension_days, offer_id: offer_id, status: PaymentStatus.IN_PROGRESS }).save()
     return data.url;
   }
 
