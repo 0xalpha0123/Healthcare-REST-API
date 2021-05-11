@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -24,18 +25,19 @@ import { S3ManagerService } from '../../common/services/s3-manager.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { File } from '../../common/interfaces/file.interface';
 import { CompanyLocation } from './entities/companyLocation.entity';
+import { CompanyFilterDto } from './dto/company-filter.dto';
 
 @Controller('companies')
 export class CompaniesController {
   constructor(
     private companyService: CompaniesService,
     private s3ManagerService: S3ManagerService,
-  ) {}
+  ) { }
 
   @Get()
   @HttpCode(200)
-  findAll(): Promise<Company[]> {
-    return this.companyService.findAll();
+  findAll(@Query(ValidationPipe) filterDto: CompanyFilterDto): Promise<Company[]> {
+    return this.companyService.findAll(filterDto);
   }
 
   @UseGuards(AuthGuard())

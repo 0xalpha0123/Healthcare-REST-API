@@ -14,6 +14,7 @@ import { CompanyRepository } from './repositories/company.repository';
 import { User } from '../auth/user.entity';
 import { UserWithCompanyError } from './errors/userWithCompany.error';
 import { UserWithoutCompanyError } from './errors/userWithoutCompany.error';
+import { CompanyFilterDto } from './dto/company-filter.dto';
 
 @Injectable()
 export class CompaniesService {
@@ -26,14 +27,19 @@ export class CompaniesService {
     private companyLocationRepository: CompanyLocationRepository,
   ) {}
 
-  findAll(): Promise<Company[]> {
-    return this.companyRepository.find({
-      relations: ['photos', 'locations', 'offers'],
-    });
+  findAll(filterDto: CompanyFilterDto): Promise<Company[]> {
+    const { city, name } = filterDto;
+    return this.companyRepository.createQueryBuilder('company')
+      .innerJoin('company.locations', 'locationsCondition')
+      .andWhere('company.name like :name', { name: `%${name || ''}%` })
+      .andWhere('locationsCondition.city like :city', { city: `%${city || ''}%` })
+      .leftJoinAndSelect('company.photos', 'photos')
+      .leftJoinAndSelect('company.locations', 'locations')
+      .getMany()
   }
 
   findOne(id: number): Promise<Company> {
-    return this.companyRepository.findById(id);
+    return this.companyRepository.findOne(id, { relations: ['locations', 'offers', 'offers.locations', 'offers.agreement_types', 'offers.profession', 'offers.specialization', 'photos'] });
   }
 
   findByUserId(userId): Promise<Company> {
