@@ -8,5 +8,4 @@ export class CompanyFilterDto {
   @IsString()
   @IsOptional()
   city: string;
-
 }

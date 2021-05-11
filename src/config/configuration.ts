@@ -21,22 +21,21 @@ export interface AWSConfig {
 }
 
 export interface MailgunConfig {
-  apiKey: string,
-  domain: string
+  apiKey: string;
+  domain: string;
 }
 
 export interface TpayConfig {
-  url: string,
-  id: string,
-  api_password: string,
-  api_key: string,
-  security_code: string,
-  result_url: string,
-  result_email: string,
-  return_url: string,
-  return_error_url: string
+  url: string;
+  id: string;
+  api_password: string;
+  api_key: string;
+  security_code: string;
+  result_url: string;
+  result_email: string;
+  return_url: string;
+  return_error_url: string;
 }
-
 
 export interface ConfigI {
   database: ConnectionOptions | TypeOrmModuleOptions;
@@ -66,7 +65,7 @@ export default (): ConfigI => ({
   },
   mailgun: {
     apiKey: process.env.MAILGUN_API_KEY,
-    domain: process.env.MAILGUN_DOMAIN
+    domain: process.env.MAILGUN_DOMAIN,
   },
   tpay: {
     url: process.env.TPAY_API_URL,
@@ -77,6 +76,6 @@ export default (): ConfigI => ({
     result_url: process.env.TPAY_RESULT_URL,
     result_email: process.env.TPAY_RESULT_EMAIL,
     return_url: process.env.TPAY_RETURN_URL,
-    return_error_url: process.env.TPAY_RETURN_ERROR_URL
-  }
+    return_error_url: process.env.TPAY_RETURN_ERROR_URL,
+  },
 });

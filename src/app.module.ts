@@ -36,7 +36,7 @@ import { PaymentsModule } from './modules/payments/payments.module';
     CompaniesModule,
     OffersModule,
     CandidatesModule,
-    PaymentsModule
+    PaymentsModule,
   ],
   controllers: [],
   providers: [],

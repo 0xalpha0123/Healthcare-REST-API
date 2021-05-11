@@ -15,11 +15,14 @@ import { Offer } from '../offers/entities/offer.entity';
 import { User } from '../auth/user.entity';
 import { CompaniesService } from '../companies/companies.service';
 
-
 @Injectable()
 export class PaymentsService {
-  constructor(private readonly configService: ConfigService, @InjectRepository(Payment)
-  private paymentRepository: Repository<Payment>, private httpService: HttpService, private companiesService: CompaniesService,
+  constructor(
+    private readonly configService: ConfigService,
+    @InjectRepository(Payment)
+    private paymentRepository: Repository<Payment>,
+    private httpService: HttpService,
+    private companiesService: CompaniesService,
   ) {
     this.config = this.configService.get('tpay');
   }
@@ -27,24 +30,34 @@ export class PaymentsService {
 
   async getPaymentsByUserId(userId: Number) {
     const whereOfferIdIn = (qb) => {
-      const subQuery = qb.subQuery()
-        .select("off.id")
-        .from(Offer, "off")
-        .innerJoin("off.company", "company")
-        .where("company.user_id = :userId", { userId }).getQuery();
+      const subQuery = qb
+        .subQuery()
+        .select('off.id')
+        .from(Offer, 'off')
+        .innerJoin('off.company', 'company')
+        .where('company.user_id = :userId', { userId })
+        .getQuery();
       return `p.offer_id IN ${subQuery}`;
-    }
-    return await this.paymentRepository.createQueryBuilder("p")
-      .leftJoinAndSelect("p.offer", "o")
-      .select(["p.title", "p.extension_days", "p.amount", "p.status", "p.created_at", "o.title"])
+    };
+    return await this.paymentRepository
+      .createQueryBuilder('p')
+      .leftJoinAndSelect('p.offer', 'o')
+      .select([
+        'p.title',
+        'p.extension_days',
+        'p.amount',
+        'p.status',
+        'p.created_at',
+        'o.title',
+      ])
       .where(whereOfferIdIn)
       .getMany();
   }
 
   async getBanks(): Promise<Bank[]> {
-    const { data }: { data: BankResponse } = await this.httpService.get(
-      `${this.config.url}/groups-${this.config.id}0.js?json`,
-    ).toPromise();
+    const { data }: { data: BankResponse } = await this.httpService
+      .get(`${this.config.url}/groups-${this.config.id}0.js?json`)
+      .toPromise();
     const excludeIds = [166, 106, 109, 148, 157, 163, 150, 103]; // we use only banks to simplify process
     const banks: Bank[] = [];
     Object.keys(data).forEach((key) => {
@@ -57,7 +70,10 @@ export class PaymentsService {
     return banks;
   }
 
-  async createTransaction(transactionDto: TransactionDto, user: User): Promise<String> {
+  async createTransaction(
+    transactionDto: TransactionDto,
+    user: User,
+  ): Promise<String> {
     const {
       id,
       api_password,
@@ -66,7 +82,7 @@ export class PaymentsService {
       result_email,
       result_url,
       return_url,
-      return_error_url
+      return_error_url,
     } = this.config;
     const { amount, bankId, extensionDays, offerId } = transactionDto;
     const crc = crypto.randomBytes(64).toString('hex');
@@ -88,18 +104,37 @@ export class PaymentsService {
       description: `${t.tpayDescription} ${extensionDays} ${t.tpayDescription2}`,
       merchant_description: 'Healthcare Hireos',
       name: company.name,
-      language: 'PL'
+      language: 'PL',
     };
 
-    const { data } = await this.httpService.post(`${this.config.url}/api/gw/${api_key}/transaction/create`, requestBody).toPromise();
-    await this.paymentRepository.create({ title: data.title, crc, amount, extension_days: extensionDays, offer_id: offerId, status: PaymentStatus.IN_PROGRESS }).save()
+    const { data } = await this.httpService
+      .post(
+        `${this.config.url}/api/gw/${api_key}/transaction/create`,
+        requestBody,
+      )
+      .toPromise();
+    await this.paymentRepository
+      .create({
+        title: data.title,
+        crc,
+        amount,
+        extension_days: extensionDays,
+        offer_id: offerId,
+        status: PaymentStatus.IN_PROGRESS,
+      })
+      .save();
     return data.url;
   }
 
-
-
   async handleNotification(notificationDto: NotificationDto): Promise<void> {
-    const { tr_status, tr_error, tr_crc, tr_paid, md5sum, id } = notificationDto;
+    const {
+      tr_status,
+      tr_error,
+      tr_crc,
+      tr_paid,
+      md5sum,
+      id,
+    } = notificationDto;
 
     let payment: Payment;
 
@@ -108,20 +143,30 @@ export class PaymentsService {
         throw new Error('Unexpected error');
       }
 
-      payment = await this.paymentRepository.findOne({ crc: tr_crc }, {
-        relations: ['offer'],
-      });
+      payment = await this.paymentRepository.findOne(
+        { crc: tr_crc },
+        {
+          relations: ['offer'],
+        },
+      );
 
       if (!payment) {
         throw new Error('Payment with provided crc not found');
       }
-      if (md5sum !== md5(String(id) + String(payment.amount) + payment.crc + this.config.security_code)) {
+      if (
+        md5sum !==
+        md5(
+          String(id) +
+            String(payment.amount) +
+            payment.crc +
+            this.config.security_code,
+        )
+      ) {
         throw new Error('Incorrect md5sum value');
       }
       if (+tr_paid !== +payment.amount) {
         throw new Error('Incorrect tr_paid value');
       }
-
     } catch (error) {
       if (payment) {
         payment.status = PaymentStatus.CANCELED;

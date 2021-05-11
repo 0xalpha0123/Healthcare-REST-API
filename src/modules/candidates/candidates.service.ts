@@ -13,23 +13,28 @@ export class CandidatesService {
     @InjectRepository(Candidate)
     private candidateRepository: Repository<Candidate>,
     private companiesService: CompaniesService,
-  ) { }
+  ) {}
 
-  async findAll(filterDto: CandidateFilterDto, user: User): Promise<Candidate[]> {
+  async findAll(
+    filterDto: CandidateFilterDto,
+    user: User,
+  ): Promise<Candidate[]> {
     const company = await this.companiesService.findByUserId(user.id);
 
     if (!company) {
       throw new BadRequestException('User have to create company first');
     }
-    const offerIds: number[] = company.offers.map(el => el.id);
+    const offerIds: number[] = company.offers.map((el) => el.id);
     const params = (() => {
       if (filterDto.offer_id) {
         if (!offerIds.includes(+filterDto.offer_id)) {
-          throw new BadRequestException(`Filtering by offer which not belong to user's company is not allowed`);
+          throw new BadRequestException(
+            `Filtering by offer which not belong to user's company is not allowed`,
+          );
         }
-        return { offer_id: filterDto.offer_id }
+        return { offer_id: filterDto.offer_id };
       }
-      return { offer_id: In(offerIds) }
+      return { offer_id: In(offerIds) };
     })();
     return await this.candidateRepository.find(params);
   }

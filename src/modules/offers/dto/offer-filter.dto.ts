@@ -1,4 +1,9 @@
-import { IsNumber, IsNumberString, IsOptional, IsString } from 'class-validator';
+import {
+  IsNumber,
+  IsNumberString,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class OfferFilterDto {
   @IsOptional()

@@ -47,7 +47,7 @@ export class AuthController {
   ) {
     return this.authService.changePassword(authCredentialsDto, user);
   }
-  
+
   @UseGuards(AuthGuard())
   @Get()
   getIsAuth() {

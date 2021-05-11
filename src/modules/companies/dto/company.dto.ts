@@ -70,7 +70,6 @@ export class CompanyDto {
   @IsOptional()
   @MaxLength(255)
   logo_file_path: string;
-
 }
 
 export class CompanyWithUserDto extends CompanyDto {
@@ -79,6 +78,6 @@ export class CompanyWithUserDto extends CompanyDto {
 }
 
 export class LocationWithUserDto extends LocationDto {
-   @IsNumber()
+  @IsNumber()
   user_id: number;
 }
