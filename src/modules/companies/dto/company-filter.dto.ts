@@ -3,10 +3,9 @@ import { IsOptional, IsString } from 'class-validator';
 export class CompanyFilterDto {
   @IsOptional()
   @IsString()
-  name: string;
+  name?: string;
 
   @IsString()
   @IsOptional()
-  city: string;
-
+  city?: string;
 }

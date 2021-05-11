@@ -114,6 +114,14 @@ export const userCredentialsDto = {
   active: false,
 };
 
+export const anotherUserCredentialsDto = {
+  email: 'email2@gmail.com',
+  password: 'testingPassword1234!',
+  salt: 'salt',
+  verification_token: 'ver-token',
+  active: false,
+}
+
 export const companyDataDto = {
   name: 'test',
   description: 'desc',

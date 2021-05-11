@@ -15,6 +15,7 @@ import { User } from '../auth/user.entity';
 import { UserWithCompanyError } from './errors/userWithCompany.error';
 import { UserWithoutCompanyError } from './errors/userWithoutCompany.error';
 import { CompanyFilterDto } from './dto/company-filter.dto';
+import { LocationNotAssignedToCompanyError } from './errors/locationNotAssignedToCompany.error';
 
 @Injectable()
 export class CompaniesService {
@@ -35,11 +36,21 @@ export class CompaniesService {
       .andWhere('locationsCondition.city like :city', { city: `%${city || ''}%` })
       .leftJoinAndSelect('company.photos', 'photos')
       .leftJoinAndSelect('company.locations', 'locations')
-      .getMany()
+      .getMany();
   }
 
   findOne(id: number): Promise<Company> {
-    return this.companyRepository.findOne(id, { relations: ['locations', 'offers', 'offers.locations', 'offers.agreement_types', 'offers.profession', 'offers.specialization', 'photos'] });
+    return this.companyRepository.findOne(id, {
+      relations: [
+        'locations',
+        'offers',
+        'offers.locations',
+        'offers.agreement_types',
+        'offers.profession',
+        'offers.specialization',
+        'photos',
+      ],
+    });
   }
 
   findByUserId(userId): Promise<Company> {
@@ -106,9 +117,7 @@ export class CompaniesService {
     const company = await this.findByUserId(user.id);
     const location = await this.companyLocationRepository.findOne(id);
     if (company.id !== location.company_id) {
-      throw new BadRequestException(
-        'User cannot delete location of other company',
-      );
+      throw new LocationNotAssignedToCompanyError()
     }
 
     return this.companyLocationRepository.delete(id);

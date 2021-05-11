@@ -5,6 +5,7 @@ import { CompanyLocationRepository } from './repositories/companyLocation.reposi
 import { CompanyPhoto } from './entities/companyPhoto.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
+  anotherUserCredentialsDto,
   companyDataDto,
   fileDto,
   locationDto,
@@ -20,6 +21,7 @@ import { PassportModule } from '@nestjs/passport';
 import { UserWithCompanyError } from './errors/userWithCompany.error';
 import { Repository } from 'typeorm';
 import { UserWithoutCompanyError } from './errors/userWithoutCompany.error';
+import { LocationNotAssignedToCompanyError } from './errors/locationNotAssignedToCompany.error';
 
 describe('CompaniesController', () => {
   let moduleRef: TestingModule;
@@ -101,8 +103,21 @@ describe('CompaniesController', () => {
       const userData: User = await userRepository.findOne({
         email: userCredentialsDto.email,
       });
-      const company = await companyController.create(companyDataDto, userData);
-      const result = await companyController.findAll();
+
+      const company = await companyRepository.save({
+        ...companyDataDto,
+        user_id: userData.id,
+      });
+
+      const companyLocation = await companyLocationRepository.save(
+        locationDto(company.id),
+      );
+
+      company.locations = [companyLocation];
+
+      await companyRepository.save(company);
+
+      const result = await companyController.findAll({});
 
       expect(result).toHaveLength(1);
       expect(company).toMatchObject(result[0]);
@@ -234,6 +249,43 @@ describe('CompaniesController', () => {
       );
 
       expect(companyLocation).toBeUndefined();
+    });
+
+    it('should return LocationNotAssignedToCompanyError', async () => {
+      let error;
+
+      const userData: User = await userRepository.findOne({
+        email: userCredentialsDto.email,
+      });
+
+      const company = await companyController.create(companyDataDto, userData);
+
+      const companyLocation = await companyController.createLocation(userData, {
+        ...locationDto(company.id),
+        user_id: userData.id,
+      });
+
+      const anotherUser: User = await userRepository.save(
+        anotherUserCredentialsDto,
+      );
+
+      const anotherUserData: User = await userRepository.findOne({
+        email: anotherUser.email,
+      });
+
+      await companyController.create(companyDataDto, anotherUserData);
+
+      expect(companyLocation).toBeDefined();
+
+      try {
+        await companyController.deleteLocation(anotherUser, {
+          id: companyLocation.id,
+        });
+      } catch (e) {
+        error = e;
+      }
+
+      expect(error).toStrictEqual(new LocationNotAssignedToCompanyError());
     });
   });
 
