@@ -15,7 +15,6 @@ async function bootstrap() {
     .setTitle('Healthcare-hireos Api documentation')
     .setDescription('Healthcare-hireos Api documentation')
     .setVersion('0.9')
-    .addTag('Healthcare-hireos')
     .build();
   const document = SwaggerModule.createDocument(app, config);
 

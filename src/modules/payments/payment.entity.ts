@@ -1,6 +1,15 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { Offer } from "../offers/entities/offer.entity";
-import PaymentStatus from "./paymentStatus.enum";
+import {
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Offer } from '../offers/entities/offer.entity';
+import PaymentStatus from './paymentStatus.enum';
 
 @Entity()
 export class Payment extends BaseEntity {
@@ -20,10 +29,10 @@ export class Payment extends BaseEntity {
   extension_days: number;
 
   @Column()
-  status: PaymentStatus
+  status: PaymentStatus;
 
   @Column()
-  offer_id: number
+  offer_id: number;
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
@@ -32,7 +41,7 @@ export class Payment extends BaseEntity {
   updated_at: Date;
 
   @ManyToOne(() => Offer, (offer) => offer.payments, {
-    cascade: true
+    cascade: true,
   })
   @JoinColumn({ name: 'offer_id' })
   offer: Offer;

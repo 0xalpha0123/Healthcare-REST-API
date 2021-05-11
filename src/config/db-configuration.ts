@@ -14,16 +14,12 @@ export const SeedConfig: ConnectionOptions | TypeOrmModuleOptions = {
   username: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE_NAME,
-  migrations: [
-      'src/seeders/*.ts'
-  ],
+  migrations: ['src/seeders/*.ts'],
   cli: {
-      migrationsDir: 'src/seeders',
+    migrationsDir: 'src/seeders',
   },
   logging: true,
 };
-
-
 
 export const DbConfig: ConnectionOptions | TypeOrmModuleOptions = {
   name: 'default',

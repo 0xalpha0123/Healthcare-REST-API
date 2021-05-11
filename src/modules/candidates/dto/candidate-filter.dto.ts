@@ -1,5 +1,6 @@
+import { ApiProperty } from '@nestjs/swagger';
+
 export class CandidateFilterDto {
-
-    offer_id: number;
-
+  @ApiProperty()
+  offer_id: number;
 }

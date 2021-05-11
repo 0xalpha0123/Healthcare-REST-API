@@ -14,7 +14,7 @@ export class AuthService {
     @InjectRepository(UserRepository)
     private userRepository: UserRepository,
     private jwtService: JwtService,
-    private mailService: MailService
+    private mailService: MailService,
   ) {}
 
   async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
@@ -23,8 +23,8 @@ export class AuthService {
       from: 'Healthcare Hireos <hello@healthcare-hireos.com>',
       to: user.email,
       subject: 'Healthcare Hireos - confirm your account',
-      html: getEmailTemplate(user.verification_token)
-    })
+      html: getEmailTemplate(user.verification_token),
+    });
   }
 
   async verifyEmail(verificationToken: string): Promise<void> {
