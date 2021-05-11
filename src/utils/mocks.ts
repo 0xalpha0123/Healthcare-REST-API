@@ -18,7 +18,7 @@ import { Observable } from 'rxjs';
 export const mockedMailGunConfig = {
   apiKey: 'apikey',
   domain: 'domain',
-}
+};
 
 export const mockedTpayConfig = {
   url: 'url',
@@ -120,7 +120,7 @@ export const anotherUserCredentialsDto = {
   salt: 'salt',
   verification_token: 'ver-token',
   active: false,
-}
+};
 
 export const companyDataDto = {
   name: 'test',
@@ -208,7 +208,12 @@ export const paymentDto = (offerId: number, crc = 'crc') => ({
   status: PaymentStatus.IN_PROGRESS,
 });
 
-export const transactionDto = ({ offer_id, amount, bank_id, extension_days }) => ({
+export const transactionDto = ({
+  offer_id,
+  amount,
+  bank_id,
+  extension_days,
+}) => ({
   offer_id,
   amount,
   bank_id,

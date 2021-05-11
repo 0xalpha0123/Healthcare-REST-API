@@ -30,10 +30,13 @@ export class CompaniesService {
 
   findAll(filterDto: CompanyFilterDto): Promise<Company[]> {
     const { city, name } = filterDto;
-    return this.companyRepository.createQueryBuilder('company')
+    return this.companyRepository
+      .createQueryBuilder('company')
       .innerJoin('company.locations', 'locationsCondition')
       .andWhere('company.name like :name', { name: `%${name || ''}%` })
-      .andWhere('locationsCondition.city like :city', { city: `%${city || ''}%` })
+      .andWhere('locationsCondition.city like :city', {
+        city: `%${city || ''}%`,
+      })
       .leftJoinAndSelect('company.photos', 'photos')
       .leftJoinAndSelect('company.locations', 'locations')
       .getMany();
@@ -117,7 +120,7 @@ export class CompaniesService {
     const company = await this.findByUserId(user.id);
     const location = await this.companyLocationRepository.findOne(id);
     if (company.id !== location.company_id) {
-      throw new LocationNotAssignedToCompanyError()
+      throw new LocationNotAssignedToCompanyError();
     }
 
     return this.companyLocationRepository.delete(id);

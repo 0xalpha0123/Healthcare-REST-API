@@ -32,11 +32,13 @@ export class CompaniesController {
   constructor(
     private companyService: CompaniesService,
     private s3ManagerService: S3ManagerService,
-  ) { }
+  ) {}
 
   @Get()
   @HttpCode(200)
-  findAll(@Query(ValidationPipe) filterDto: CompanyFilterDto): Promise<Company[]> {
+  findAll(
+    @Query(ValidationPipe) filterDto: CompanyFilterDto,
+  ): Promise<Company[]> {
     return this.companyService.findAll(filterDto);
   }
 
