@@ -13,27 +13,32 @@ import { Specialization } from '../modules/offers/entities/specialization.entity
 import { CandidateDto } from '../modules/candidates/dto/candidate.dto';
 import { LocationDto } from '../modules/companies/dto/company.dto';
 import PaymentStatus from '../modules/payments/paymentStatus.enum';
+import { Observable } from 'rxjs';
+
+export const mockedMailGunConfig = {
+  apiKey: 'apikey',
+  domain: 'domain',
+}
+
+export const mockedTpayConfig = {
+  url: 'url',
+  id: 55,
+  api_password: 'api_password',
+  api_key: 'api_key',
+  security_code: 'security_code',
+  result_url: 'result_url',
+  result_email: 'result_email',
+  return_url: 'return_url',
+  return_error_url: 'return_error_url',
+};
 
 export const mockedConfigService = {
   get(key: string) {
     switch (key) {
       case 'mailgun':
-        return {
-          apiKey: 'apikey',
-          domain: 'domain',
-        };
+        return mockedMailGunConfig;
       case 'tpay':
-        return {
-          url: 'url',
-          id: 'string',
-          api_password: 'string',
-          api_key: 'string',
-          security_code: 'string',
-          result_url: 'string',
-          result_email: 'string',
-          return_url: 'string',
-          return_error_url: 'string',
-        };
+        return mockedTpayConfig;
     }
   },
 };
@@ -56,7 +61,19 @@ export const mockedMailService = {
   },
 };
 
-export const mockedHttpServiceForPayments = {};
+export const mockedHttpServiceForPayments = {
+  post() {
+    return new Observable((obs) => {
+      obs.next({
+        data: {
+          title: 'title',
+          url: 'url',
+        },
+      });
+      obs.complete();
+    });
+  },
+};
 
 export const dateAfter2Days = () => {
   const now = new Date();
@@ -174,11 +191,34 @@ export const offerDto = ({
   paid_till: dateAfter2Days(),
 });
 
-export const paymentDto = (offerId: number) => ({
+export const paymentDto = (offerId: number, crc = 'crc') => ({
   title: 'title',
-  crc: 'crc',
+  crc,
   amount: 123,
   extension_days: 5,
   offer_id: offerId,
   status: PaymentStatus.IN_PROGRESS,
+});
+
+export const transactionDto = ({ offer_id, amount, bank_id, extension_days }) => ({
+  offer_id,
+  amount,
+  bank_id,
+  extension_days,
+});
+
+export const notifcationDto = ({
+  id,
+  tr_status,
+  tr_error,
+  tr_crc,
+  tr_paid,
+  md5sum,
+}) => ({
+  id,
+  tr_status,
+  tr_error,
+  tr_crc,
+  tr_paid,
+  md5sum,
 });

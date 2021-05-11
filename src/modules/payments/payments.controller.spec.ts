@@ -13,10 +13,13 @@ import {
   mockedConfigService,
   mockedDb,
   mockedHttpServiceForPayments,
+  mockedTpayConfig,
+  notifcationDto,
   offerDto,
   paymentDto,
   professionDto,
   specializationDto,
+  transactionDto,
   userCredentialsDto,
 } from '../../utils/mocks';
 import { PaymentsController } from './payments.controller';
@@ -31,6 +34,12 @@ import { User } from '../auth/user.entity';
 import { PaymentsService } from './payments.service';
 import { ConfigService } from '@nestjs/config';
 import { CompaniesService } from '../companies/companies.service';
+import md5 from 'md5';
+import PaymentStatus from './paymentStatus.enum';
+import { UnexpectedError } from '../../common/errors/unexpected.error';
+import { CrcNotFoundError } from './errors/crcNotFound.error';
+import { IncorrectMd5Error } from './errors/incorrectMd5.error';
+import { IncorrectTrPaidError } from './errors/incorrectTrPaid.error';
 
 describe('PaymentsController', () => {
   let moduleRef: TestingModule;
@@ -138,6 +147,216 @@ describe('PaymentsController', () => {
 
       expect(result).toBeDefined();
       expect(result).toHaveLength(3);
+    });
+  });
+
+  describe('CreateTransaction', () => {
+    it('should create transaction', async () => {
+      const userData: User = await userRepository.findOne({
+        email: userCredentialsDto.email,
+      });
+
+      const result = await paymentsController.createTransaction(
+        transactionDto({
+          offer_id: offer.id,
+          amount: 1000,
+          bank_id: 10,
+          extension_days: 5,
+        }),
+        userData,
+      );
+
+      expect(result).toBeDefined();
+    });
+  });
+
+  describe('HandleNotification', () => {
+    it('should handle notification', async () => {
+      const userData: User = await userRepository.findOne({
+        email: userCredentialsDto.email,
+      });
+
+      const paidAmount = 1000;
+
+      await paymentsController.createTransaction(
+        transactionDto({
+          offer_id: offer.id,
+          amount: paidAmount,
+          extension_days: 5,
+          bank_id: 10,
+        }),
+        userData,
+      );
+
+      let payment: Payment = await paymentRepository.findOne({
+        offer_id: offer.id,
+      });
+
+      const md5sum = md5(
+        String(mockedTpayConfig.id) +
+          String(payment.amount) +
+          payment.crc +
+          mockedTpayConfig.security_code,
+      );
+
+      const notification = notifcationDto({
+        id: mockedTpayConfig.id,
+        tr_status: 'TRUE',
+        tr_error: 'none',
+        tr_crc: payment.crc,
+        md5sum,
+        tr_paid: paidAmount,
+      });
+
+      await paymentsController.handleNotification(notification);
+
+      payment = await paymentRepository.findOne({
+        offer_id: offer.id,
+      });
+
+      expect(payment.status).toEqual(PaymentStatus.SUCCESS);
+    });
+
+    it('should return UnexpectedError', async () => {
+      let error;
+
+      const notification = notifcationDto({
+        id: mockedTpayConfig.id,
+        tr_status: 'FALSE',
+        tr_error: 'ERROR',
+        tr_crc: 'crc',
+        md5sum: 'md5sum',
+        tr_paid: 1000,
+      });
+
+      try {
+        await paymentsController.handleNotification(notification);
+      } catch (e) {
+        error = e;
+      }
+
+      expect(error).toStrictEqual(new UnexpectedError());
+    });
+
+    it('should return CrcNotFoundError', async () => {
+      let error;
+
+      const notification = notifcationDto({
+        id: mockedTpayConfig.id,
+        tr_status: 'TRUE',
+        tr_error: 'none',
+        tr_crc: 'crc',
+        md5sum: 'md5sum',
+        tr_paid: 1000,
+      });
+
+      try {
+        await paymentsController.handleNotification(notification);
+      } catch (e) {
+        error = e;
+      }
+
+      expect(error).toStrictEqual(new CrcNotFoundError());
+    });
+
+    it('should return IncorrectMd5Error', async () => {
+      let error;
+      const userData: User = await userRepository.findOne({
+        email: userCredentialsDto.email,
+      });
+
+      const paidAmount = 1000;
+
+      await paymentsController.createTransaction(
+        transactionDto({
+          offer_id: offer.id,
+          amount: paidAmount,
+          extension_days: 5,
+          bank_id: 10,
+        }),
+        userData,
+      );
+
+      let payment: Payment = await paymentRepository.findOne({
+        offer_id: offer.id,
+      });
+
+      const notification = notifcationDto({
+        id: mockedTpayConfig.id,
+        tr_status: 'TRUE',
+        tr_error: 'none',
+        tr_crc: payment.crc,
+        md5sum: 'badmd5sum',
+        tr_paid: paidAmount,
+      });
+
+      try {
+        await paymentsController.handleNotification(notification);
+      } catch (e) {
+        error = e;
+      }
+
+      expect(error).toStrictEqual(new IncorrectMd5Error());
+
+      payment = await paymentRepository.findOne({
+        offer_id: offer.id,
+      });
+
+      expect(payment.status).toEqual(PaymentStatus.CANCELED);
+    });
+
+    it('should return IncorrectTrPaidError', async () => {
+      let error;
+
+      const userData: User = await userRepository.findOne({
+        email: userCredentialsDto.email,
+      });
+
+      const paidAmount = 1000;
+
+      await paymentsController.createTransaction(
+        transactionDto({
+          offer_id: offer.id,
+          amount: paidAmount,
+          extension_days: 5,
+          bank_id: 10,
+        }),
+        userData,
+      );
+
+      let payment: Payment = await paymentRepository.findOne({
+        offer_id: offer.id,
+      });
+
+      const md5sum = md5(
+        String(mockedTpayConfig.id) +
+          String(payment.amount) +
+          payment.crc +
+          mockedTpayConfig.security_code,
+      );
+
+      const notification = notifcationDto({
+        id: mockedTpayConfig.id,
+        tr_status: 'TRUE',
+        tr_error: 'none',
+        tr_crc: payment.crc,
+        md5sum,
+        tr_paid: 5000,
+      });
+
+      try {
+        await paymentsController.handleNotification(notification);
+      } catch (e) {
+        error = e;
+      }
+
+      expect(error).toStrictEqual(new IncorrectTrPaidError());
+
+      payment = await paymentRepository.findOne({
+        offer_id: offer.id,
+      });
+
+      expect(payment.status).toEqual(PaymentStatus.CANCELED);
     });
   });
 });

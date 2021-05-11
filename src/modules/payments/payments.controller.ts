@@ -39,7 +39,7 @@ export class PaymentsController {
   createTransaction(
     @Body(ValidationPipe) transactionDto: TransactionDto,
     @GetAuthorizedUser() user: User,
-  ): Promise<String> {
+  ): Promise<string> {
     return this.paymentsService.createTransaction(transactionDto, user);
   }
 

@@ -5,11 +5,11 @@ export default class TransactionDto {
   amount: number;
 
   @IsNotEmpty()
-  bankId: number;
+  bank_id: number;
 
   @IsNotEmpty()
-  extensionDays: number;
+  extension_days: number;
 
   @IsNotEmpty()
-  offerId: number;
+  offer_id: number;
 }
