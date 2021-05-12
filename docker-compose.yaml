@@ -54,20 +54,5 @@ services:
       - app-network
     restart: unless-stopped
 
-  postgres-test:
-    image: postgres
-    container_name: postgres-test
-    ports:
-      - 5555:${DATABASE_PORT}
-    env_file:
-      - .env
-    environment:
-      - POSTGRES_USER=test-user-nest
-      - POSTGRES_PASSWORD=test-password-nest
-      - POSTGRES_DB=test-database-nest
-    networks:
-      - app-network
-    restart: unless-stopped
-
 networks:
   app-network:
