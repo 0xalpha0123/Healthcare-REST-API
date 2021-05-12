@@ -62,7 +62,6 @@ export class PaymentsService {
     const { data }: { data: BankResponse } = await this.httpService
       .get(`${this.config.url}/groups-${this.config.id}0.js?json`)
       .toPromise();
-
     const excludeIds = [166, 106, 109, 148, 157, 163, 150, 103]; // we use only banks to simplify process
 
     const banks: Bank[] = [];
