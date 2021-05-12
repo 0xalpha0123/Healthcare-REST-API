@@ -28,7 +28,7 @@ export class PaymentsService {
   }
   config: TpayConfig;
 
-  async getPaymentsByUserId(userId: Number) {
+  async getPaymentsByUserId(userId: number) {
     const whereoffer_idIn = (qb) => {
       const subQuery = qb
         .subQuery()
@@ -73,7 +73,7 @@ export class PaymentsService {
   async createTransaction(
     transactionDto: TransactionDto,
     user: User,
-  ): Promise<String> {
+  ): Promise<string> {
     const {
       id,
       api_password,

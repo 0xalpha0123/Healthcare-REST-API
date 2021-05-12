@@ -99,3 +99,15 @@ export class LocationWithUserDto extends LocationDto {
   @IsNumber()
   user_id: number;
 }
+
+export class CompanyParamDto {
+  id: number;
+}
+
+export class CompanyPhotoParamDto {
+  id: number;
+}
+
+export class CompanyLocationParamDto {
+  id: number;
+}

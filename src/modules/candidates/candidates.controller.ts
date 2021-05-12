@@ -19,9 +19,11 @@ import { Candidate } from './entities/candidate.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '../auth/user.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { File } from '../../common/interfaces/file.interface';
+import { File, FileUploadDto } from '../../common/interfaces/file.interface';
 import { S3ManagerService } from '../../common/services/s3-manager.service';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('candidates')
 @Controller('candidates')
 export class CandidatesController {
   constructor(
@@ -32,6 +34,18 @@ export class CandidatesController {
   @UseGuards(AuthGuard())
   @Get()
   @HttpCode(200)
+  @ApiResponse({
+    status: 200,
+    description: 'The candidates has been successfully fetched.',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'There are no candidates.',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized.',
+  })
   findAll(
     @Query(ValidationPipe) filterDto: CandidateFilterDto,
     @GetAuthorizedUser() user: User,
@@ -41,6 +55,14 @@ export class CandidatesController {
 
   @Post()
   @HttpCode(201)
+  @ApiResponse({
+    status: 201,
+    description: 'The candidate has been successfully created.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Validation error',
+  })
   create(@Body(ValidationPipe) data: CandidateDto): Promise<Candidate> {
     return this.candidatesService.create(data);
   }
@@ -48,6 +70,18 @@ export class CandidatesController {
   @Post('upload-cv')
   @HttpCode(201)
   @UseInterceptors(FileInterceptor('file'))
+  @ApiResponse({
+    status: 201,
+    description: 'The file has been successfully uploaded.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Validation error',
+  })
+  @ApiBody({
+    description: 'Cv file',
+    type: FileUploadDto,
+  })
   async createCV(@UploadedFile() file: File) {
     if (file.mimetype !== 'application/pdf') {
       throw new BadRequestException('File must have .pdf extension');

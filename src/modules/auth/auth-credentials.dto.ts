@@ -21,3 +21,7 @@ export class AuthCredentialsDto {
   })
   password: string;
 }
+
+export class VerificationTokenParamDto {
+  verificationToken: string;
+}

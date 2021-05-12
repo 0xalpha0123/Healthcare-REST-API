@@ -38,3 +38,7 @@ export class OfferDto {
   @IsNotEmpty()
   active: boolean;
 }
+
+export class OfferParamsDto {
+  id: number;
+}
