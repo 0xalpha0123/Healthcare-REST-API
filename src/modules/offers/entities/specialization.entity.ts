@@ -28,9 +28,6 @@ export class Specialization extends BaseEntity {
   @Column({ default: false })
   is_promoted: boolean;
 
-  @Column()
-  icon_path: string;
-
   @OneToMany(() => Offer, (offer) => offer.specialization, { cascade: true })
   offers: Offer[];
 }
