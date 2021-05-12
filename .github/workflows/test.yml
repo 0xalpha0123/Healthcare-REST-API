@@ -9,5 +9,5 @@ jobs:
         run: cd test && ls && docker-compose up -d postgres-test
       - name: Install deps
         run: npm install
-      - name: Install deps
+      - name: Run tests
         run: npm run test
