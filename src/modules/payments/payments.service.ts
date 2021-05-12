@@ -1,4 +1,4 @@
-import { BadRequestException, HttpService, Injectable } from '@nestjs/common';
+import { HttpService, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TpayConfig } from 'src/config/configuration';
 import { Bank, BankResponse } from './bank.interface';
@@ -14,6 +14,10 @@ import NotificationDto from './notification.dto';
 import { Offer } from '../offers/entities/offer.entity';
 import { User } from '../auth/user.entity';
 import { CompaniesService } from '../companies/companies.service';
+import { UnexpectedError } from '../../common/errors/unexpected.error';
+import { CrcNotFoundError } from './errors/crcNotFound.error';
+import { IncorrectMd5Error } from './errors/incorrectMd5.error';
+import { IncorrectTrPaidError } from './errors/incorrectTrPaid.error';
 
 @Injectable()
 export class PaymentsService {
@@ -59,7 +63,9 @@ export class PaymentsService {
       .get(`${this.config.url}/groups-${this.config.id}0.js?json`)
       .toPromise();
     const excludeIds = [166, 106, 109, 148, 157, 163, 150, 103]; // we use only banks to simplify process
+
     const banks: Bank[] = [];
+
     Object.keys(data).forEach((key) => {
       const id: number = +key;
       if (!excludeIds.includes(id)) {
@@ -113,6 +119,7 @@ export class PaymentsService {
         requestBody,
       )
       .toPromise();
+
     await this.paymentRepository
       .create({
         title: data.title,
@@ -123,6 +130,7 @@ export class PaymentsService {
         status: PaymentStatus.IN_PROGRESS,
       })
       .save();
+
     return data.url;
   }
 
@@ -140,7 +148,7 @@ export class PaymentsService {
 
     try {
       if (tr_status !== 'TRUE' || tr_error !== 'none') {
-        throw new Error('Unexpected error');
+        throw new UnexpectedError();
       }
 
       payment = await this.paymentRepository.findOne(
@@ -151,7 +159,7 @@ export class PaymentsService {
       );
 
       if (!payment) {
-        throw new Error('Payment with provided crc not found');
+        throw new CrcNotFoundError();
       }
       if (
         md5sum !==
@@ -162,17 +170,17 @@ export class PaymentsService {
             this.config.security_code,
         )
       ) {
-        throw new Error('Incorrect md5sum value');
+        throw new IncorrectMd5Error();
       }
       if (+tr_paid !== +payment.amount) {
-        throw new Error('Incorrect tr_paid value');
+        throw new IncorrectTrPaidError();
       }
     } catch (error) {
       if (payment) {
         payment.status = PaymentStatus.CANCELED;
         await payment.save();
       }
-      throw new BadRequestException(error);
+      throw error;
     }
 
     payment.status = PaymentStatus.SUCCESS;

@@ -2,8 +2,6 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CandidateDto } from 'src/modules/candidates/dto/candidate.dto';
 import { In, Repository } from 'typeorm';
-import { User } from '../auth/user.entity';
-import { CompaniesService } from '../companies/companies.service';
 import { CandidateFilterDto } from './dto/candidate-filter.dto';
 import { Candidate } from './entities/candidate.entity';
 
@@ -12,15 +10,9 @@ export class CandidatesService {
   constructor(
     @InjectRepository(Candidate)
     private candidateRepository: Repository<Candidate>,
-    private companiesService: CompaniesService,
   ) {}
 
-  async findAll(
-    filterDto: CandidateFilterDto,
-    user: User,
-  ): Promise<Candidate[]> {
-    const company = await this.companiesService.findByUserId(user.id);
-
+  async findAll(filterDto: CandidateFilterDto, company): Promise<Candidate[]> {
     if (!company) {
       throw new BadRequestException('User have to create company first');
     }

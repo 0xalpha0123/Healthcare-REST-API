@@ -22,7 +22,6 @@ export const SeedConfig: ConnectionOptions | TypeOrmModuleOptions = {
 };
 
 export const DbConfig: ConnectionOptions | TypeOrmModuleOptions = {
-  name: 'default',
   type: 'postgres',
   host: process.env.DATABASE_HOST,
   port: parseInt(process.env.DATABASE_PORT),

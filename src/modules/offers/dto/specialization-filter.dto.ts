@@ -5,5 +5,5 @@ export class SpecializationFilterDto {
   @ApiProperty()
   @IsOptional()
   @IsNotEmpty()
-  profession_id: number;
+  profession_id?: number;
 }

@@ -7,12 +7,12 @@ export class CompanyFilterDto {
   })
   @IsOptional()
   @IsString()
-  name: string;
+  name?: string;
 
   @ApiProperty({
     example: 'city',
   })
   @IsString()
   @IsOptional()
-  city: string;
+  city?: string;
 }

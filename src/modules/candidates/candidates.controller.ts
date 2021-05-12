@@ -11,8 +11,8 @@ import {
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
-import { CandidateDto } from 'src/modules/candidates/dto/candidate.dto';
-import { GetAuthorizedUser } from 'src/common/decorators/getAuthorizedUser.decorator';
+import { CandidateDto } from './dto/candidate.dto';
+import { GetAuthorizedUser } from '../../common/decorators/getAuthorizedUser.decorator';
 import { CandidatesService } from './candidates.service';
 import { CandidateFilterDto } from './dto/candidate-filter.dto';
 import { Candidate } from './entities/candidate.entity';
@@ -21,6 +21,7 @@ import { User } from '../auth/user.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { File, FileUploadDto } from '../../common/interfaces/file.interface';
 import { S3ManagerService } from '../../common/services/s3-manager.service';
+import { CompaniesService } from '../companies/companies.service';
 import { ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('candidates')
@@ -28,6 +29,7 @@ import { ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
 export class CandidatesController {
   constructor(
     private candidatesService: CandidatesService,
+    private companiesService: CompaniesService,
     private s3ManagerService: S3ManagerService,
   ) {}
 
@@ -46,11 +48,12 @@ export class CandidatesController {
     status: 401,
     description: 'Unauthorized.',
   })
-  findAll(
+  async findAll(
     @Query(ValidationPipe) filterDto: CandidateFilterDto,
     @GetAuthorizedUser() user: User,
   ) {
-    return this.candidatesService.findAll(filterDto, user);
+    const company = await this.companiesService.findByUserId(user.id);
+    return this.candidatesService.findAll(filterDto, company);
   }
 
   @Post()

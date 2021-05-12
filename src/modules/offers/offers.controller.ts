@@ -11,7 +11,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { GetAuthorizedUser } from 'src/common/decorators/getAuthorizedUser.decorator';
+import { GetAuthorizedUser } from '../../common/decorators/getAuthorizedUser.decorator';
 import { User } from '../auth/user.entity';
 import { OfferFilterDto } from './dto/offer-filter.dto';
 import { OfferDto, OfferParamsDto } from './dto/offer.dto';
@@ -143,7 +143,7 @@ export class OffersController {
     @Param() params: OfferParamsDto,
     @Body() data: OfferDto,
     @GetAuthorizedUser() user: User,
-  ): Promise<void> {
+  ): Promise<Offer> {
     return this.offersService.update(params.id, data, user);
   }
 }

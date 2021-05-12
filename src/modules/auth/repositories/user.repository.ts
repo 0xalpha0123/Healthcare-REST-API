@@ -1,13 +1,11 @@
-import {
-  ConflictException,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { InternalServerErrorException } from '@nestjs/common';
 import { EntityRepository, Repository } from 'typeorm';
-import { AuthCredentialsDto } from './auth-credentials.dto';
-import { User } from './user.entity';
+import { AuthCredentialsDto } from '../auth-credentials.dto';
+import { User } from '../user.entity';
 import * as bcrypt from 'bcrypt';
 import crypto from 'crypto';
+import { UserEmailExistsError } from '../errors/userEmailExists.error';
+import { InvalidCredentialsError } from '../errors/invalidCredentials.error';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -23,7 +21,7 @@ export class UserRepository extends Repository<User> {
       await user.save();
     } catch (error) {
       if (error.code === '23505') {
-        throw new ConflictException('email already exists');
+        throw new UserEmailExistsError();
       } else {
         throw new InternalServerErrorException(error);
       }
@@ -35,7 +33,7 @@ export class UserRepository extends Repository<User> {
     const { email, password } = authCredentialsDto;
     const user = await this.findOne({ id: userData.id, email });
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new InvalidCredentialsError();
     }
     user.password = await this.hashPassword(password, user.salt);
     await user.save();

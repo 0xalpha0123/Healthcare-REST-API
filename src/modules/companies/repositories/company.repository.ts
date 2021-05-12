@@ -1,8 +1,8 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Company } from './entities/company.entity';
+import { Company } from '../entities/company.entity';
 
 @EntityRepository(Company)
-export class CompaniesRepository extends Repository<Company> {
+export class CompanyRepository extends Repository<Company> {
   async findById(id: number): Promise<Company> {
     return this.createQueryBuilder('company')
       .leftJoinAndSelect('company.offers', 'offers')

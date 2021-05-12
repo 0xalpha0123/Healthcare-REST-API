@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-
-const mailgun = require('mailgun-js');
+import mailgun from 'mailgun-js';
 
 interface MailBody {
   from: string;
@@ -9,8 +8,9 @@ interface MailBody {
   subject: string;
   html: string;
 }
+
 @Injectable()
-class MailService {
+export class MailService {
   private mailer;
   constructor(private readonly configService: ConfigService) {
     const mailgunConfig = this.configService.get('mailgun');
@@ -25,5 +25,3 @@ class MailService {
     });
   }
 }
-
-export default MailService;

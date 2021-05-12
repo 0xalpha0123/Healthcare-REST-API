@@ -1,4 +1,4 @@
-import { Offer } from 'src/modules/offers/entities/offer.entity';
+import { Offer } from '../../offers/entities/offer.entity';
 import {
   BaseEntity,
   Column,
