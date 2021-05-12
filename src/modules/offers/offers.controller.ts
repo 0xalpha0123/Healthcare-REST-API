@@ -11,7 +11,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { GetAuthorizedUser } from 'src/common/decorators/getAuthorizedUser.decorator';
+import { GetAuthorizedUser } from '../../common/decorators/getAuthorizedUser.decorator';
 import { User } from '../auth/user.entity';
 import { OfferFilterDto } from './dto/offer-filter.dto';
 import { OfferDto } from './dto/offer.dto';
@@ -24,7 +24,7 @@ import { OffersService } from './offers.service';
 
 @Controller('offers')
 export class OffersController {
-  constructor(private offersService: OffersService) { }
+  constructor(private offersService: OffersService) {}
 
   @Get('agreement-types')
   @HttpCode(200)
@@ -61,14 +61,21 @@ export class OffersController {
   @UseGuards(AuthGuard())
   @Post()
   @HttpCode(201)
-  create(@Body(ValidationPipe) data: OfferDto, @GetAuthorizedUser() user: User): Promise<Offer> {
+  create(
+    @Body(ValidationPipe) data: OfferDto,
+    @GetAuthorizedUser() user: User,
+  ): Promise<Offer> {
     return this.offersService.create(data, user);
   }
 
   @UseGuards(AuthGuard())
   @Put(':id')
   @HttpCode(204)
-  update(@Param() params, @Body() data: OfferDto, @GetAuthorizedUser() user: User): Promise<void> {
-    return this.offersService.update(params.id, data, user);
+  update(
+    @Param() { id },
+    @Body() data: OfferDto,
+    @GetAuthorizedUser() user: User,
+  ): Promise<Offer> {
+    return this.offersService.update(id, data, user);
   }
 }

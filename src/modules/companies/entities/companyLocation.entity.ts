@@ -12,7 +12,7 @@ import {
 import { Company } from './company.entity';
 import { Coordinates } from '../../../common/interfaces/coordinates.interface';
 import { PointTransformer } from '../../../common/transformers/point.transformer';
-import { Offer } from 'src/modules/offers/entities/offer.entity';
+import { Offer } from '../../offers/entities/offer.entity';
 
 @Entity()
 export class CompanyLocation extends BaseEntity {

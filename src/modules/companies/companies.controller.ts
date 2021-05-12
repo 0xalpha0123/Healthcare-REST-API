@@ -32,11 +32,13 @@ export class CompaniesController {
   constructor(
     private companyService: CompaniesService,
     private s3ManagerService: S3ManagerService,
-  ) { }
+  ) {}
 
   @Get()
   @HttpCode(200)
-  findAll(@Query(ValidationPipe) filterDto: CompanyFilterDto): Promise<Company[]> {
+  findAll(
+    @Query(ValidationPipe) filterDto: CompanyFilterDto,
+  ): Promise<Company[]> {
     return this.companyService.findAll(filterDto);
   }
 
@@ -132,7 +134,7 @@ export class CompaniesController {
   @HttpCode(201)
   async createLocation(
     @GetAuthorizedUser() user: User,
-    @Body() data: LocationWithUserDto
+    @Body() data: LocationWithUserDto,
   ) {
     return this.companyService.createLocation({ ...data, user_id: user.id });
   }
@@ -140,21 +142,15 @@ export class CompaniesController {
   @UseGuards(AuthGuard())
   @Delete('location/:id')
   @HttpCode(201)
-  async deleteLocation(
-    @GetAuthorizedUser() user: User,
-    @Param() { id }
-  ) {
-    return this.companyService.deleteLocation(id, user)
+  async deleteLocation(@GetAuthorizedUser() user: User, @Param() { id }) {
+    return this.companyService.deleteLocation(id, user);
   }
 
   @UseGuards(AuthGuard())
   @Post('upload-logo')
   @HttpCode(201)
   @UseInterceptors(FileInterceptor('file'))
-  async uploadLogo(
-    @UploadedFile() file: File,
-  ) {
-
+  async uploadLogo(@UploadedFile() file: File) {
     const upload = await this.s3ManagerService
       .uploadFile('logos', file)
       .catch(() => {
@@ -162,7 +158,6 @@ export class CompaniesController {
           'There was problem during uploading file',
         );
       });
-
 
     return { file_path: upload.Location };
   }

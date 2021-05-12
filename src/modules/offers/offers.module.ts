@@ -19,7 +19,7 @@ import { OffersRepository } from './offers.repository';
       AgreementType,
       Profession,
       Specialization,
-      CompanyLocation
+      CompanyLocation,
     ]),
   ],
   providers: [OffersService],

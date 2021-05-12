@@ -1,7 +1,7 @@
-import { IsNotEmpty, IsOptional } from "class-validator";
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class SpecializationFilterDto {
   @IsOptional()
   @IsNotEmpty()
-  profession_id: number;
+  profession_id?: number;
 }

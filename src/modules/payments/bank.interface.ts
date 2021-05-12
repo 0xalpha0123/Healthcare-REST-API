@@ -10,5 +10,5 @@ export interface BankWithNoId {
 }
 
 export interface BankResponse {
-  [key: string]: BankWithNoId,
+  [key: string]: BankWithNoId;
 }
