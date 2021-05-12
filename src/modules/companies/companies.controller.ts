@@ -32,7 +32,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { File, FileUploadDto } from '../../common/interfaces/file.interface';
 import { CompanyLocation } from './entities/companyLocation.entity';
 import { CompanyFilterDto } from './dto/company-filter.dto';
-import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('companies')
 @Controller('companies')
@@ -171,6 +171,7 @@ export class CompaniesController {
     status: 400,
     description: 'User do not have company',
   })
+  @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'Photo file',
     type: FileUploadDto,
@@ -286,6 +287,7 @@ export class CompaniesController {
     status: 401,
     description: 'Unauthorized',
   })
+  @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'Logo file',
     type: FileUploadDto,

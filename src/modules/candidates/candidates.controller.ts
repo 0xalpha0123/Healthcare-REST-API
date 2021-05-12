@@ -21,7 +21,7 @@ import { User } from '../auth/user.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { File, FileUploadDto } from '../../common/interfaces/file.interface';
 import { S3ManagerService } from '../../common/services/s3-manager.service';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('candidates')
 @Controller('candidates')
@@ -78,6 +78,7 @@ export class CandidatesController {
     status: 400,
     description: 'Validation error',
   })
+  @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'Cv file',
     type: FileUploadDto,

@@ -2,39 +2,57 @@ import { IsNotEmpty, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class OfferDto {
-  @ApiProperty()
+  @ApiProperty({
+    example: 'title',
+  })
   @IsNotEmpty()
   title: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 'description',
+  })
   @IsNotEmpty()
   description: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 1000,
+  })
   @IsOptional()
   salary_from?: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 5000,
+  })
   @IsOptional()
   salary_to?: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: [1, 2],
+  })
   @IsOptional()
   agreement_type_ids: number[];
 
-  @ApiProperty()
+  @ApiProperty({
+    example: [1, 2],
+  })
   @IsOptional()
   company_location_ids: number[];
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 1,
+  })
   @IsNotEmpty()
   profession_id: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 1,
+  })
   @IsOptional()
   specialization_id: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: true,
+  })
   @IsNotEmpty()
   active: boolean;
 }

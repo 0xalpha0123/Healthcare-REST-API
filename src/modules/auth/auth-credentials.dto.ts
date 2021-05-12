@@ -8,11 +8,15 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 export class AuthCredentialsDto {
-  @ApiProperty()
+  @ApiProperty({
+    example: 'email@api.com',
+  })
   @IsEmail()
   email: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 'password',
+  })
   @IsString()
   @MinLength(4)
   @MaxLength(20)

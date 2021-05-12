@@ -2,22 +2,32 @@ import { IsOptional, IsUrl } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CandidateDto {
-  @ApiProperty()
+  @ApiProperty({
+    example: 'candidate first name',
+  })
   first_name: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 'candidate last name',
+  })
   last_name: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 'message',
+  })
   @IsOptional()
   message: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 'cv path',
+  })
   @IsUrl({
     allow_trailing_dot: true,
   })
   cv_file_path: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 1,
+  })
   offer_id: number;
 }
