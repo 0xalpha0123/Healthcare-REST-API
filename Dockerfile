@@ -4,7 +4,6 @@ COPY package*.json ./
 RUN rm -rf node_modules
 RUN npm install glob rimraf
 RUN npm install
-RUN npm install --rebuild-binary
 COPY . .
 RUN npm run build
 
