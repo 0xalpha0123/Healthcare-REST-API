@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class Init1620842134193 implements MigrationInterface {
-  name = 'Init1620842134193';
+export class Init1620895554906 implements MigrationInterface {
+  name = 'Init1620895554906';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
@@ -17,13 +17,13 @@ export class Init1620842134193 implements MigrationInterface {
       `CREATE TABLE "company" ("id" SERIAL NOT NULL, "name" character varying NOT NULL, "description" character varying, "logo_file_path" character varying, "website_url" character varying, "user_id" integer NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "REL_879141ebc259b4c0544b3f1ea4" UNIQUE ("user_id"), CONSTRAINT "PK_056f7854a7afdba7cbd6d45fc20" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "payment" ("id" SERIAL NOT NULL, "title" character varying NOT NULL, "crc" character varying NOT NULL, "amount" money NOT NULL, "extension_days" integer NOT NULL, "status" character varying NOT NULL, "offer_id" integer NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_fcaec7df5adf9cac408c686b2ab" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "payment" ("id" SERIAL NOT NULL, "title" character varying NOT NULL, "crc" character varying NOT NULL, "amount" numeric NOT NULL, "extension_days" integer NOT NULL, "status" character varying NOT NULL, "offer_id" integer NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "updated_at" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_fcaec7df5adf9cac408c686b2ab" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "agreement_type" ("id" SERIAL NOT NULL, "name" character varying NOT NULL, CONSTRAINT "PK_4264e2a1b1ee8a896c7e66774a6" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "specialization" ("id" SERIAL NOT NULL, "name" character varying NOT NULL, "profession_id" integer NOT NULL, "is_promoted" boolean NOT NULL DEFAULT false, CONSTRAINT "PK_904dfcbdb57f56f5b57b9c09cc5" PRIMARY KEY ("id"))`,
+      `CREATE TABLE "specialization" ("id" SERIAL NOT NULL, "name" character varying NOT NULL, "profession_id" integer NOT NULL, CONSTRAINT "PK_904dfcbdb57f56f5b57b9c09cc5" PRIMARY KEY ("id"))`,
     );
     await queryRunner.query(
       `CREATE TABLE "profession" ("id" SERIAL NOT NULL, "name" character varying NOT NULL, CONSTRAINT "PK_7a54f88e18eaeb628aef171dc52" PRIMARY KEY ("id"))`,

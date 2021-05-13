@@ -25,9 +25,6 @@ export class Specialization extends BaseEntity {
   @Column({ nullable: false })
   profession_id: number;
 
-  @Column({ default: false })
-  is_promoted: boolean;
-
   @OneToMany(() => Offer, (offer) => offer.specialization, { cascade: true })
   offers: Offer[];
 }
