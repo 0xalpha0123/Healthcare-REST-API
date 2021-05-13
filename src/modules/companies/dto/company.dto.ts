@@ -6,6 +6,7 @@ import {
   MaxLength,
 } from 'class-validator';
 import { Coordinates } from '../../../common/interfaces/coordinates.interface';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 
 export class PhotoDto {
   @IsString()
@@ -50,26 +51,32 @@ export class LocationDto {
 }
 
 export class CompanyDto {
-  @IsNumber()
-  @IsOptional()
-  id?: number;
-
+  @ApiProperty({
+    example: 'company name',
+  })
   @IsString()
   name: string;
 
+  @ApiProperty({
+    example: 'company description',
+  })
   @IsString()
   @IsOptional()
   description: string;
 
+  @ApiProperty({
+    example: 'company website url',
+  })
   @IsString()
   @IsOptional()
   @MaxLength(255)
   website_url: string;
 
+  @ApiHideProperty()
   @IsString()
   @IsOptional()
   @MaxLength(255)
-  logo_file_path: string;
+  logo_file_path?: string;
 }
 
 export class CompanyWithUserDto extends CompanyDto {
@@ -80,4 +87,16 @@ export class CompanyWithUserDto extends CompanyDto {
 export class LocationWithUserDto extends LocationDto {
   @IsNumber()
   user_id: number;
+}
+
+export class CompanyParamDto {
+  id: number;
+}
+
+export class CompanyPhotoParamDto {
+  id: number;
+}
+
+export class CompanyLocationParamDto {
+  id: number;
 }

@@ -1,0 +1,17 @@
+version: '3'
+services:
+  postgres-test:
+    image: postgres
+    container_name: postgres-test
+    ports:
+      - 5555:5432
+    environment:
+      - POSTGRES_USER=test-user-nest
+      - POSTGRES_PASSWORD=test-password-nest
+      - POSTGRES_DB=test-database-nest
+    networks:
+      - test-app-network
+    restart: unless-stopped
+
+networks:
+  test-app-network:

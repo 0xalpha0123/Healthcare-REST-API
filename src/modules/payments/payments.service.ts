@@ -1,4 +1,4 @@
-import { BadRequestException, HttpService, Injectable } from '@nestjs/common';
+import { HttpService, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TpayConfig } from 'src/config/configuration';
 import { Bank, BankResponse } from './bank.interface';
@@ -14,6 +14,10 @@ import NotificationDto from './notification.dto';
 import { Offer } from '../offers/entities/offer.entity';
 import { User } from '../auth/user.entity';
 import { CompaniesService } from '../companies/companies.service';
+import { UnexpectedError } from '../../common/errors/unexpected.error';
+import { CrcNotFoundError } from './errors/crcNotFound.error';
+import { IncorrectMd5Error } from './errors/incorrectMd5.error';
+import { IncorrectTrPaidError } from './errors/incorrectTrPaid.error';
 
 @Injectable()
 export class PaymentsService {
@@ -28,8 +32,8 @@ export class PaymentsService {
   }
   config: TpayConfig;
 
-  async getPaymentsByUserId(userId: Number) {
-    const whereOfferIdIn = (qb) => {
+  async getPaymentsByUserId(userId: number) {
+    const whereoffer_idIn = (qb) => {
       const subQuery = qb
         .subQuery()
         .select('off.id')
@@ -50,7 +54,7 @@ export class PaymentsService {
         'p.created_at',
         'o.title',
       ])
-      .where(whereOfferIdIn)
+      .where(whereoffer_idIn)
       .getMany();
   }
 
@@ -59,7 +63,9 @@ export class PaymentsService {
       .get(`${this.config.url}/groups-${this.config.id}0.js?json`)
       .toPromise();
     const excludeIds = [166, 106, 109, 148, 157, 163, 150, 103]; // we use only banks to simplify process
+
     const banks: Bank[] = [];
+
     Object.keys(data).forEach((key) => {
       const id: number = +key;
       if (!excludeIds.includes(id)) {
@@ -73,7 +79,7 @@ export class PaymentsService {
   async createTransaction(
     transactionDto: TransactionDto,
     user: User,
-  ): Promise<String> {
+  ): Promise<string> {
     const {
       id,
       api_password,
@@ -84,7 +90,7 @@ export class PaymentsService {
       return_url,
       return_error_url,
     } = this.config;
-    const { amount, bankId, extensionDays, offerId } = transactionDto;
+    const { amount, bank_id, extension_days, offer_id } = transactionDto;
     const crc = crypto.randomBytes(64).toString('hex');
     const company = await this.companiesService.findByUserId(user.id);
     const requestBody = {
@@ -98,10 +104,10 @@ export class PaymentsService {
       return_error_url,
       email: user.email,
       amount: +amount,
-      group: +bankId,
+      group: +bank_id,
       crc,
       md5sum: md5(String(id) + String(amount) + crc + security_code),
-      description: `${t.tpayDescription} ${extensionDays} ${t.tpayDescription2}`,
+      description: `${t.tpayDescription} ${extension_days} ${t.tpayDescription2}`,
       merchant_description: 'Healthcare Hireos',
       name: company.name,
       language: 'PL',
@@ -113,16 +119,18 @@ export class PaymentsService {
         requestBody,
       )
       .toPromise();
+
     await this.paymentRepository
       .create({
         title: data.title,
         crc,
         amount,
-        extension_days: extensionDays,
-        offer_id: offerId,
+        extension_days: extension_days,
+        offer_id: offer_id,
         status: PaymentStatus.IN_PROGRESS,
       })
       .save();
+
     return data.url;
   }
 
@@ -140,7 +148,7 @@ export class PaymentsService {
 
     try {
       if (tr_status !== 'TRUE' || tr_error !== 'none') {
-        throw new Error('Unexpected error');
+        throw new UnexpectedError();
       }
 
       payment = await this.paymentRepository.findOne(
@@ -151,7 +159,7 @@ export class PaymentsService {
       );
 
       if (!payment) {
-        throw new Error('Payment with provided crc not found');
+        throw new CrcNotFoundError();
       }
       if (
         md5sum !==
@@ -162,17 +170,17 @@ export class PaymentsService {
             this.config.security_code,
         )
       ) {
-        throw new Error('Incorrect md5sum value');
+        throw new IncorrectMd5Error();
       }
       if (+tr_paid !== +payment.amount) {
-        throw new Error('Incorrect tr_paid value');
+        throw new IncorrectTrPaidError();
       }
     } catch (error) {
       if (payment) {
         payment.status = PaymentStatus.CANCELED;
         await payment.save();
       }
-      throw new BadRequestException(error);
+      throw error;
     }
 
     payment.status = PaymentStatus.SUCCESS;

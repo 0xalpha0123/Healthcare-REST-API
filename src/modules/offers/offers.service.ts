@@ -79,7 +79,7 @@ export class OffersService {
     return await this.offerRepository.create(offer).save();
   }
 
-  async update(id: number, data: OfferDto, user: User): Promise<void> {
+  async update(id: number, data: OfferDto, user: User): Promise<Offer> {
     const company = await this.companiesService.findByUserId(user.id);
 
     if (!company) {
@@ -98,7 +98,7 @@ export class OffersService {
       throw new NotFoundException('Offer not found');
     }
 
-    let offerData: any = { ...data, company_id: company.id };
+    const offerData: any = { ...data, company_id: company.id };
 
     if (data.agreement_type_ids) {
       delete offerData.agreement_type_ids;
@@ -114,20 +114,20 @@ export class OffersService {
       );
     }
 
-    await this.offerRepository.save({ ...offer, ...offerData });
+    return this.offerRepository.save({ ...offer, ...offerData });
   }
 
   async findAllProfessions(): Promise<Profession[]> {
-    return await this.professionRepository.find();
+    return this.professionRepository.find();
   }
 
   async findAllSpecializations(
     filterDto: SpecializationFilterDto,
   ): Promise<Specialization[]> {
-    return await this.specializationRepository.find(filterDto);
+    return this.specializationRepository.find(filterDto);
   }
 
   async findAllAgreementTypes(): Promise<AgreementType[]> {
-    return await this.agreementTypeRepository.find();
+    return this.agreementTypeRepository.find();
   }
 }

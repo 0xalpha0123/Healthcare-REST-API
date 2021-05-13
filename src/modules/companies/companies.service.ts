@@ -10,15 +10,18 @@ import {
 import { CompanyPhoto } from './entities/companyPhoto.entity';
 import { CompanyLocationRepository } from './repositories/companyLocation.repository';
 import { CompanyLocation } from './entities/companyLocation.entity';
-import { CompaniesRepository } from './companies.repository';
+import { CompanyRepository } from './repositories/company.repository';
 import { User } from '../auth/user.entity';
+import { UserWithCompanyError } from './errors/userWithCompany.error';
+import { UserWithoutCompanyError } from './errors/userWithoutCompany.error';
 import { CompanyFilterDto } from './dto/company-filter.dto';
+import { LocationNotAssignedToCompanyError } from './errors/locationNotAssignedToCompany.error';
 
 @Injectable()
 export class CompaniesService {
   constructor(
-    @InjectRepository(CompaniesRepository)
-    private companyRepository: CompaniesRepository,
+    @InjectRepository(CompanyRepository)
+    private companyRepository: CompanyRepository,
     @InjectRepository(CompanyPhoto)
     private companyPhotoRepository: Repository<CompanyPhoto>,
     @InjectRepository(CompanyLocationRepository)
@@ -68,7 +71,7 @@ export class CompaniesService {
     const company = await this.findByUserId(data.user_id);
 
     if (company) {
-      throw new BadRequestException('User already have company');
+      throw new UserWithCompanyError();
     }
 
     return this.companyRepository.create(data).save();
@@ -105,7 +108,7 @@ export class CompaniesService {
   async createLocation(data: LocationWithUserDto) {
     const company = await this.findByUserId(data.user_id);
     if (!company) {
-      throw new BadRequestException('User do not have company');
+      throw new UserWithoutCompanyError();
     }
     delete data.user_id;
     return this.companyLocationRepository
@@ -117,9 +120,7 @@ export class CompaniesService {
     const company = await this.findByUserId(user.id);
     const location = await this.companyLocationRepository.findOne(id);
     if (company.id !== location.company_id) {
-      throw new BadRequestException(
-        'User cannot delete location of other company',
-      );
+      throw new LocationNotAssignedToCompanyError();
     }
 
     return this.companyLocationRepository.delete(id);

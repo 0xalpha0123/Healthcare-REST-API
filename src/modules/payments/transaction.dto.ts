@@ -1,15 +1,20 @@
 import { IsNotEmpty } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export default class TransactionDto {
+  @ApiProperty()
   @IsNotEmpty()
   amount: number;
 
+  @ApiProperty()
   @IsNotEmpty()
-  bankId: number;
+  bank_id: number;
 
+  @ApiProperty()
   @IsNotEmpty()
-  extensionDays: number;
+  extension_days: number;
 
+  @ApiProperty()
   @IsNotEmpty()
-  offerId: number;
+  offer_id: number;
 }
