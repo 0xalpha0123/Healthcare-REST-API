@@ -18,10 +18,14 @@ export class MailService {
   }
 
   sendMail(mailBody: MailBody) {
-    this.mailer.messages().send(mailBody, (error) => {
-      if (error) {
-        console.log(error);
-      }
-    });
+    return new Promise((resolve, reject) => {
+      this.mailer.messages().send(mailBody, (error, response) => {
+        if (error) {
+          return reject(error);
+        }
+        return resolve(response);
+      });
+
+    })
   }
 }

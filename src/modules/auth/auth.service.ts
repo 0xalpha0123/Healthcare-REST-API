@@ -18,11 +18,11 @@ export class AuthService {
     private userRepository: UserRepository,
     private jwtService: JwtService,
     private mailService: MailService,
-  ) {}
+  ) { }
 
   async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
     const user = await this.userRepository.signUp(authCredentialsDto);
-    this.mailService.sendMail({
+    await this.mailService.sendMail({
       from: 'Healthcare Hireos <hello@healthcare-hireos.com>',
       to: user.email,
       subject: 'Healthcare Hireos - confirm your account',

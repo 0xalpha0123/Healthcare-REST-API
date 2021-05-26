@@ -23,6 +23,7 @@ export interface AWSConfig {
 export interface MailgunConfig {
   apiKey: string;
   domain: string;
+  host: string;
 }
 
 export interface TpayConfig {
@@ -66,6 +67,7 @@ export default (): ConfigI => ({
   mailgun: {
     apiKey: process.env.MAILGUN_API_KEY,
     domain: process.env.MAILGUN_DOMAIN,
+    host: "api.eu.mailgun.net"
   },
   tpay: {
     url: process.env.TPAY_API_URL,
