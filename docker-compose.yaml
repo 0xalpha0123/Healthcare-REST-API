@@ -24,6 +24,7 @@ services:
     image: nestjs-api-prod:1.0.0
     build:
       context: .
+      target: production
       dockerfile: ./Dockerfile
     ports:
       -  ${APP_PORT_LOCAL-APP_PORT}:${APP_PORT}

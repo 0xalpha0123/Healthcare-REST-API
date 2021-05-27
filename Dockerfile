@@ -1,7 +1,6 @@
 FROM node:14.15.1-alpine as development
 WORKDIR /usr/src/app
 COPY package*.json ./
-RUN rm -rf node_modules
 RUN npm install glob rimraf
 RUN npm install
 COPY . .
