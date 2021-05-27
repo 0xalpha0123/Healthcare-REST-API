@@ -1,9 +1,11 @@
 FROM node:14.15.1-alpine as development
 WORKDIR /usr/src/app
 COPY package*.json ./
+COPY tsconfig*.json ./
+COPY nest-cli.json ./
 RUN npm install glob rimraf
 RUN npm install
-COPY ./src ./src
+COPY ./src ./
 RUN npm run build
 
 FROM node:14.15.1-alpine as production
