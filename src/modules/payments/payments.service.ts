@@ -127,7 +127,7 @@ export class PaymentsService {
         amount,
         extension_days: extension_days,
         offer_id: offer_id,
-        status: PaymentStatus.IN_PROGRESS,
+        status: PaymentStatus.SUCCESS,
       })
       .save();
 
