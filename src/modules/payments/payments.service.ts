@@ -120,7 +120,7 @@ export class PaymentsService {
       )
       .toPromise();
 
-    await this.paymentRepository
+    const payment = this.paymentRepository
       .create({
         title: data.title,
         crc,
@@ -129,8 +129,9 @@ export class PaymentsService {
         offer_id: offer_id,
         status: PaymentStatus.SUCCESS,
       })
-      .save();
 
+    payment.offer.extendValidity(payment.extension_days);
+    await payment.save();
     return data.url;
   }
 
@@ -165,9 +166,9 @@ export class PaymentsService {
         md5sum !==
         md5(
           String(id) +
-            String(payment.amount) +
-            payment.crc +
-            this.config.security_code,
+          String(payment.amount) +
+          payment.crc +
+          this.config.security_code,
         )
       ) {
         throw new IncorrectMd5Error();

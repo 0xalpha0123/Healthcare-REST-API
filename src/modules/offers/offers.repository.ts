@@ -36,6 +36,7 @@ export class OffersRepository extends Repository<Offer> {
       .andWhere('locationsCondition.city like :city', {
         city: `%${city || ''}%`,
       })
+      .andWhere('offer.active IS TRUE')
       .andWhere('offer.paid_till > :now', { now: new Date().toISOString() })
       .andWhere('offer.salary_to <= :salaryTo', { salaryTo })
       .andWhere('offer.salary_to >= :salaryFrom', { salaryFrom })
