@@ -1,4 +1,4 @@
-import { CompanyLocation } from 'src/modules/companies/entities/companyLocation.entity';
+import { CompanyLocation } from '../../companies/entities/companyLocation.entity';
 import { AgreementType } from '../entities/agreementType.entity';
 import { OfferDto } from './offer.dto';
 import { ApiProperty } from '@nestjs/swagger';
