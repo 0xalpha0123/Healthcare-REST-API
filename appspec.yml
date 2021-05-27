@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 files:
   - source: /
-    destination: /app/backend
+    destination: /home/ec2-user/app/backend
 hooks:
   ApplicationStart:
     - location: scripts/start_container.sh

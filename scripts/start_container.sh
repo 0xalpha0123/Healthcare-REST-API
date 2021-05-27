@@ -1,5 +1,5 @@
 #!/bin/sh
-cd /app/backend || exit
-cp /app/envs/backend.env .env
+cd /home/ec2-user/app/backend || exit
+cp ../envs/backend.env .env
 git checkout dev
 /usr/local/bin/docker-compose up -d dev
