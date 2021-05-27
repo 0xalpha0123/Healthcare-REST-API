@@ -120,7 +120,7 @@ export class PaymentsService {
       )
       .toPromise();
 
-    const payment = this.paymentRepository
+    const payment = await this.paymentRepository
       .create({
         title: data.title,
         crc,
@@ -128,7 +128,7 @@ export class PaymentsService {
         extension_days: extension_days,
         offer_id: offer_id,
         status: PaymentStatus.SUCCESS,
-      })
+      }).save();
 
     payment.offer.extendValidity(payment.extension_days);
     await payment.save();
