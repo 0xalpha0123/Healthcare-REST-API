@@ -8,6 +8,7 @@ RUN npm run build
 FROM node:14.15.1-alpine as production
 WORKDIR /usr/src/app
 COPY package*.json ./
+COPY .env ./
 RUN npm install
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
