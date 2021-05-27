@@ -120,17 +120,25 @@ export class PaymentsService {
       )
       .toPromise();
 
-    const payment = await this.paymentRepository
+    await this.paymentRepository
       .create({
         title: data.title,
         crc,
         amount,
         extension_days: extension_days,
         offer_id: offer_id,
-        status: PaymentStatus.SUCCESS,
+        status: PaymentStatus.IN_PROGRESS,
       }).save();
 
-    payment.offer.extendValidity(payment.extension_days);
+    //to fix:
+    const payment = await this.paymentRepository.findOne(
+      { crc },
+      {
+        relations: ['offer'],
+      },
+    );
+    payment.status = PaymentStatus.SUCCESS;
+    payment.offer.extendValidity(extension_days);
     await payment.save();
     return data.url;
   }
