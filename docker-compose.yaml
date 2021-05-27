@@ -1,15 +1,14 @@
-version: '3.8'
+version: '3.4'
 services:
   dev:
     container_name: nestjs_rest_api_dev
     image: nestjs-api-dev:1.0.0
     build:
       context: .
-      target: development
       dockerfile: ./Dockerfile
-    command: npm run start:debug
+    command: npm run start:dev
     ports:
-      - 3000:3000
+      -  ${APP_PORT_LOCAL-APP_PORT}:${APP_PORT}
     networks:
       - app-network
     depends_on:
@@ -24,29 +23,31 @@ services:
     image: nestjs-api-prod:1.0.0
     build:
       context: .
-      target: production
       dockerfile: ./Dockerfile
-    command: npm run start:prod
     ports:
-      - 3000:3000
+      -  ${APP_PORT_LOCAL-APP_PORT}:${APP_PORT}
     networks:
       - app-network
     depends_on:
       - postgres
     volumes:
-      - .:/usr/src/app
       - /usr/src/app/node_modules
+      - /usr/src/app/dist
     restart: unless-stopped
 
   postgres:
     image: postgres
     container_name: postgres
     ports:
-      - 5432:5432
+      - ${DATABASE_PORT_LOCAL-DATABASE_PORT}:${DATABASE_PORT}
+    env_file:
+      - .env
     environment:
-      - POSTGRES_USER=NestAppDatabaseUser
-      - POSTGRES_PASSWORD=NestAppDatabasePassword
-      - POSTGRES_DB=TheCrucible
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_DB=${DATABASE_NAME}
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
     networks:
       - app-network
     restart: unless-stopped

@@ -1,0 +1,2 @@
+#!/bin/sh
+npx ts-node ./node_modules/typeorm/cli.js migration:run --config src/config/db-configuration.ts && npx ts-node ./node_modules/typeorm/cli.js migration:run  --config src/config/db-configuration.ts -c seed

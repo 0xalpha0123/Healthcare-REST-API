@@ -1,4 +1,4 @@
-## Running the app using docker
+## Running database
 
 ```bash
 # development
@@ -9,6 +9,9 @@ $ docker-compose up -d dev
 
 # production mode
 $ docker-compose up prod
+
+# after updating package.json
+$ docker-compose up --build -V -d dev
 ```
 
 ## Running the app
@@ -22,6 +25,22 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
+```
+
+## Migrations
+
+```bash
+# create migration
+$ npm run migration:create -- <Migration_Name>
+
+# run migrations
+$ npm run migration:run
+
+# revert migration
+$ npm run migration:revert
+
+# generate migrations
+$ npm run migration:generate -- <Migration_Name>
 ```
 
 ## Test
