@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetAuthorizedUser } from '../../common/decorators/getAuthorizedUser.decorator';
-import { Bank } from 'src/modules/payments/bank.interface';
+import { Bank } from './bank.interface';
 import { User } from '../auth/user.entity';
 import NotificationDto from './notification.dto';
 import { Payment } from './payment.entity';

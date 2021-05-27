@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CandidateDto } from 'src/modules/candidates/dto/candidate.dto';
+import { CandidateDto } from './dto/candidate.dto';
 import { In, Repository } from 'typeorm';
 import { CandidateFilterDto } from './dto/candidate-filter.dto';
 import { Candidate } from './entities/candidate.entity';

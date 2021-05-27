@@ -7,7 +7,7 @@ import { AgreementType } from './entities/agreementType.entity';
 import { Profession } from './entities/profession.entity';
 import { Specialization } from './entities/specialization.entity';
 import { CompaniesModule } from '../companies/companies.module';
-import { CompanyLocation } from 'src/modules/companies/entities/companyLocation.entity';
+import { CompanyLocation } from '../companies/entities/companyLocation.entity';
 import { OffersRepository } from './offers.repository';
 
 @Module({

@@ -1,6 +1,6 @@
 import { HttpService, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { TpayConfig } from 'src/config/configuration';
+import { TpayConfig } from '../../config/configuration';
 import { Bank, BankResponse } from './bank.interface';
 import md5 from 'md5';
 import crypto from 'crypto';
