@@ -26,7 +26,6 @@ services:
       context: .
       target: production
       dockerfile: ./Dockerfile
-    command: npm run start:prod
     ports:
       -  ${APP_PORT_LOCAL-APP_PORT}:${APP_PORT}
     networks:
