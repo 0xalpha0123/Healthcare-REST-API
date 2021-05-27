@@ -31,7 +31,6 @@ services:
     depends_on:
       - postgres
     volumes:
-      - .:/usr/src/app/
       - /usr/src/app/node_modules
       - /usr/src/app/dist
     restart: unless-stopped
