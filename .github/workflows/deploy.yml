@@ -3,7 +3,7 @@ on: push
 jobs:
   deployment:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+#    if: github.ref == 'refs/heads/main'
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
