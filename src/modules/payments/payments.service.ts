@@ -128,9 +128,18 @@ export class PaymentsService {
         extension_days: extension_days,
         offer_id: offer_id,
         status: PaymentStatus.IN_PROGRESS,
-      })
-      .save();
+      }).save();
 
+    //to fix:
+    const payment = await this.paymentRepository.findOne(
+      { crc },
+      {
+        relations: ['offer'],
+      },
+    );
+    payment.status = PaymentStatus.SUCCESS;
+    payment.offer.extendValidity(extension_days);
+    await payment.save();
     return data.url;
   }
 
@@ -165,9 +174,9 @@ export class PaymentsService {
         md5sum !==
         md5(
           String(id) +
-            String(payment.amount) +
-            payment.crc +
-            this.config.security_code,
+          String(payment.amount) +
+          payment.crc +
+          this.config.security_code,
         )
       ) {
         throw new IncorrectMd5Error();

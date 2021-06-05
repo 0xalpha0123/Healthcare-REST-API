@@ -84,9 +84,9 @@ export class CompaniesService {
       throw new BadRequestException('User do not have company');
     }
 
-    const updatedCompany = await this.companyRepository.preload(data);
+    const companyData: any = { ...data, id: company.id };
 
-    await this.companyRepository.save(updatedCompany);
+    await this.companyRepository.save(companyData);
   }
 
   findOnePhoto(id, companyId): Promise<CompanyPhoto> {
